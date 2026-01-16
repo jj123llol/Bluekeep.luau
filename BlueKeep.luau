@@ -89,7 +89,7 @@ end
 local checkfor = {
     "BlueKeep",
     "BlueKeep/Plugins",
-    "BlueKeep/BlueSettings.Settings"
+    "BlueKeep/BlueSettings.Settings" -- are we even gonna use settings?
 }
 for _, path in pairs(checkfor) do
     if not isfile(path) then
@@ -97,6 +97,11 @@ for _, path in pairs(checkfor) do
     end
 end
 
+for _, file in pairs(listfiles("BlueKeep/Plugins")) do
+    pcall(function()
+        loadfile(file)()
+    end)
+end
 
 -- Commands --
 BlueKeep["Functions"]["NewCommand"]("Goto", "Goto (Plr)", "Teleports to (Target)", true, function(target)
