@@ -7,77 +7,106 @@
     Enjoy<3
 ]]
 
-type callback = () -> ()
+type Callback = () -> ()
 
+-- Setup --
+local BlueKeep = {}
+BlueKeep.Services = {}
+BlueKeep.Functions = {}
+BlueKeep.Commands = {}
+BlueKeep.Loops = {}
 
--- Setting Up! --
-getgenv().BlueKeep = {
-    ["Services"] = {},
-    ["Functions"]= {},
-    ["Commands"] = {},
-    ["Loops"] = {}
-}
 -- this way we dont accidently import multiple of the same service..
-BlueKeep["Functions"]["Service"] = function(Name: string)
-    if BlueKeep["Services"][Name] then return BlueKeep["Services"][Name] end
-    BlueKeep["Services"][Name] = cloneref(game:GetService(Name))
-    return BlueKeep["Services"][Name]
+function BlueKeep.Functions.Service(name: string)
+    local cache = BlueKeep.Services[name]
+
+    if cache then
+        return cache
+    end
+
+    BlueKeep.Services[name] = cloneref(game:GetService(name))
+    return BlueKeep.Services[name]
 end
 
 -- adds new commands to BlueKeep.luau
-BlueKeep["Functions"]["NewCommand"] = function(Name:string, CmdList: string, Description: string, SplitArgs: boolean, func: callback)
-    BlueKeep["Commands"][Name or "print"] = {
-        ["CmdList"] = CmdList or "print (Text)"
-        ["Description"] = Description or "No Description provided",
-        ["SplitArgs"] = SplitArgs or true,
+function BlueKeep.Functions.NewCommand(name: string?, cmdlist: string?, description: string?, splitargs: boolean?, func: Callback?)
+    assert(BlueKeep.Commands[name or "print"] == nil, "Command already exists")
+
+    if splitargs == nil then
+        splitargs = true
+    end
+
+    BlueKeep.Commands[name or "print"] = {
+        ["CmdList"] = cmdlist or "print (text)",
+        ["Description"] = description or "No description provided",
+        ["SplitArgs"] = splitargs,
         ["Function"] = func or print
     }
 end
 
-BlueKeep["Functions"]["RunCommand"] = function(Name: string, args: {any}) -- attempts to run command with given args
-    if not BlueKeep["Commands"][Name] then return false, error(`Failed to find command {Name}!`) end
-    if BlueKeep["Commands"][Name]["SplitArgs"] then
-        BlueKeep["Commands"][Name]["Function"](table.unpack(args))
-    else
-        local str = ""
-        for _,v in pairs(args) do
-            str = str..v
-        end
-        BlueKeep["Commands"][Name]["Function"](str)
+-- attempts to run command with given args
+function BlueKeep.Functions.RunCommand(name: string, args: {any}): boolean?
+    assert(BlueKeep.Commands[name] ~= nil, `Failed to find command {name}`)
+
+    if BlueKeep.Commands[name].SplitArgs then
+        BlueKeep.Commands[name].Function(table.unpack(args))
+        return
     end
+
+    local str = ""
+    for _, v in pairs(args) do -- pairs() is inefficient cause Luau!! but some shitsploits wont work w/out it
+        str = str..v
+    end
+
+    BlueKeep["Commands"][name].Function(str)
+
     return true
 end
 
-local lp = BlueKeep["Functions"]["Service"]("Players").LocalPlayer  --ts does NOT need a comment
+local plrs: Players = BlueKeep.Functions.Service("Players")
+local lp = plrs.LocalPlayer
 
-BlueKeep["Functions"]["GetPlayer"] = function(partName: string) -- returns list of target(s)
-    partName = partName:lower()
-    local plrs = BlueKeep["Functions"]["Service"]("Players"):GetPlayers()
-    local returntable = {}
-    if partName == "all" then return plrs end
-    if partName == "me" then return {lp} end
-    if partName == "random" then return {plrs[math.random(1, #plrs)]} end
-    if partName == "others" then
-        for _,v in pairs(plrs) do
-            if v == lp then continue end
-            table.insert(returntable, v)
+-- returns list of target(s)
+function BlueKeep.Functions.GetPlayers(keyword: string): { Player } | { nil }
+    keyword = keyword:lower()
+
+    local plist = plrs:GetPlayers()
+    local output = {}
+
+    if keyword == "all" then return plist end
+    if keyword == "me" then return {lp} end
+    if keyword == "random" then return {plist[math.random(1, #plist)]} end
+    if keyword == "others" then
+        for _, plr in pairs(plist) do
+            if plr == lp then continue end
+
+            table.insert(output, plr)
         end
     end
-    for _,v in pairs(plrs) do
-        if v:find(partName) then
-            return {v}
+
+    for _, plr in pairs(plist) do
+        local name, displayName = plr.Name:lower(), plr.DisplayName:lower()
+        if name:find(keyword) or displayName:find(keyword) then
+            table.insert(output, plr)
         end
     end
-    return {nil}
+
+    if #output <= 0 then
+        return { nil }
+    end
+
+    return output
 end
 
-BlueKeep["Functions"]["Character"] = function(plr) -- returns character of entered player, if no player entered it returns lp character
-    plr = plr or lp
-    return plr.Character or plr.CharacterAdded:Wait()
+-- returns character of entered player, if no player entered it returns lp character
+function BlueKeep.Functions.Character(plr: Player?): Model
+    local player: Player = plr or lp
+    return player.Character or player.CharacterAdded:Wait()
 end
 
-BlueKeep["Functions"]["No Vel"] = function()
-    for _, part in pairs(BlueKeep["Functions"]["Character"]():GetDescendants()) do
+function BlueKeep.Functions.NoVel()
+    local char = BlueKeep.Functions.Character()
+    for _, part in pairs(char:GetDescendants()) do
         pcall(function() 
             part.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
             part.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
@@ -85,29 +114,39 @@ BlueKeep["Functions"]["No Vel"] = function()
     end
 end
 
--- set up files --
-local checkfor = {
-    "BlueKeep",
-    "BlueKeep/Plugins",
-    "BlueKeep/BlueSettings.Settings" -- are we even gonna use settings?
-}
-for _, path in pairs(checkfor) do
-    if not isfile(path) then
-        makefolder(path)
+-- setup files --
+do
+    local folders = {
+        "BlueKeep",
+        "BlueKeep/Plugins"
+    }
+
+    local files = {
+        "BlueKeep/BlueSettings.Settings"
+    }
+
+    for _, path in pairs(folders) do
+        if not isfolder(path) then
+            makefolder(path)
+        end
+    end
+
+    for _, path in pairs(files) do
+        if not isfile(path) then
+            writefile(path, ' ')
+        end
     end
 end
 
-for _, file in pairs(listfiles("BlueKeep/Plugins")) do
-    pcall(function()
-        loadfile(file)()
-    end)
-end
-
 -- Commands --
-BlueKeep["Functions"]["NewCommand"]("Goto", "Goto (Plr)", "Teleports to (Plr)", true, function(target)
-    local targets = BlueKeep["Functions"]["GetPlayer"](target)[1]
-    for _,v in pairs(targets) do
-        BlueKeep["Functions"]["No Vel"]()
-        BlueKeep["Functions"]["Character"]():PivotTo(BlueKeep["Functions"]["Character"](v):GetPivot())
+BlueKeep.Functions.NewCommand("goto", "goto (plr)", "Teleports to (plr)", true, function(target)
+    local targets = BlueKeep.Functions.GetPlayers(target)[1]
+    local char = BlueKeep.Functions.Character()
+
+    for _, v in pairs(targets) do
+        local targetchar = BlueKeep.Functions.Character(v)
+
+        BlueKeep.Functions.NoVel()
+        char:PivotTo(targetchar:GetPivot())
     end
 end)
