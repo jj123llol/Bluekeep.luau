@@ -5,5 +5,6 @@ print("coming soon")
 ```
 
 # Extra
-Developed by really_ant., and luageek.__
+Developed by really_ant., and luageek.<br>
+Keeping it blue.
 # 🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦
