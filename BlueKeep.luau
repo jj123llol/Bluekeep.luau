@@ -10,11 +10,17 @@
 type Callback = () -> ()
 
 -- Setup --
-local BlueKeep = {}
-BlueKeep.Services = {}
-BlueKeep.Functions = {}
-BlueKeep.Commands = {}
-BlueKeep.Loops = {}
+
+if getgenv().BlueKeep then
+    error("BlueKeep is already running!")
+end
+
+getgenv().BlueKeep = {
+    Services = {},
+    Functions = {},
+    Commands = {},
+    Loops = {}
+}
 
 -- this way we dont accidently import multiple of the same service..
 function BlueKeep.Functions.Service(name: string)
