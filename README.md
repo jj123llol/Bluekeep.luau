@@ -1,7 +1,7 @@
 # 🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦
 # Loadstring
 ```lua
-print("coming soon")
+loadstring(game:HttpGet("https://raw.githubusercontent.com/jj123llol/Bluekeep.luau/refs/heads/main/BlueKeep.luau", true))()
 ```
 
 # Extra
