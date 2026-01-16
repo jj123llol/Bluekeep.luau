@@ -73,7 +73,7 @@ end
 
 BlueKeep["Functions"]["Character"] = function(plr) -- returns character of entered player, if no player entered it returns lp character
     plr = plr or lp
-    return plr.Character or plr.Character:Wait()
+    return plr.Character or plr.CharacterAdded:Wait()
 end
 
 BlueKeep["Functions"]["No Vel"] = function()
