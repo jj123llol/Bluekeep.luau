@@ -8,10 +8,11 @@
 ]]
 
 type callback = () -> ()
+if BlueKeep then return error("Bluekeep.luau is already running!") end
 
 
 -- Setting Up! --
-BlueKeep = {} -- to shut up the errors of vsc
+
 getgenv().BlueKeep = {
     ["Services"] = {},
     ["Functions"]= {},
