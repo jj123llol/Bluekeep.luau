@@ -11,7 +11,7 @@ type callback = () -> ()
 
 
 -- Setting Up! --
-local BlueKeep = {
+getgenv().BlueKeep = {
     ["Services"] = {},
     ["Functions"]= {},
     ["Commands"] = {},
@@ -35,7 +35,7 @@ BlueKeep["Functions"]["NewCommand"] = function(Name:string, CmdList: string, Des
 end
 
 BlueKeep["Functions"]["RunCommand"] = function(Name: string, args: {any}) -- attempts to run command with given args
-    if not BlueKeep["Commands"][Name] then return error(`Failed to find command {Name}!`) end
+    if not BlueKeep["Commands"][Name] then return false, error(`Failed to find command {Name}!`) end
     if BlueKeep["Commands"][Name]["SplitArgs"] then
         BlueKeep["Commands"][Name]["Function"](table.unpack(args))
     else
