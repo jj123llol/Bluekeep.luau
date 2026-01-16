@@ -104,7 +104,7 @@ for _, file in pairs(listfiles("BlueKeep/Plugins")) do
 end
 
 -- Commands --
-BlueKeep["Functions"]["NewCommand"]("Goto", "Goto (Plr)", "Teleports to (Target)", true, function(target)
+BlueKeep["Functions"]["NewCommand"]("Goto", "Goto (Plr)", "Teleports to (Plr)", true, function(target)
     local targets = BlueKeep["Functions"]["GetPlayer"](target)[1]
     for _,v in pairs(targets) do
         BlueKeep["Functions"]["No Vel"]()
