@@ -28,7 +28,7 @@ end
 -- adds new commands to BlueKeep.luau
 BlueKeep["Functions"]["NewCommand"] = function(Name:string, CmdList: string, Description: string, SplitArgs: boolean, func: callback)
     BlueKeep["Commands"][Name or "print"] = {
-        ["CmdList"] = CmdList or "print (Text)"
+        ["CmdList"] = CmdList or "print (Text)",
         ["Description"] = Description or "No Description provided",
         ["SplitArgs"] = SplitArgs or true,
         ["Function"] = func or print
