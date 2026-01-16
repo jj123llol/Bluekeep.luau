@@ -48,12 +48,12 @@ BlueKeep["Functions"]["RunCommand"] = function(Name: string, args: {any}) -- att
     end
     return true
 end
-
-local lp = BlueKeep["Functions"]["Service"]("Players").LocalPlayer  --ts does NOT need a comment
+local players: Players = BlueKeep["Functions"]["Service"]("Players")
+local lp: Player = players.LocalPlayer  --ts does NOT need a comment
 
 BlueKeep["Functions"]["GetPlayer"] = function(partName: string) -- returns list of target(s)
     partName = partName:lower()
-    local plrs = BlueKeep["Functions"]["Service"]("Players"):GetPlayers()
+    local plrs = players:GetPlayers()
     local returntable = {}
     if partName == "all" then return plrs end
     if partName == "me" then return {lp} end
