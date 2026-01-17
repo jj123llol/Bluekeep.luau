@@ -168,7 +168,7 @@ BlueKeep["Uis"]["CmdList"] = function()
     UIGridLayout.CellSize = UDim2.new(0, 250, 0, 80)
 end
 
-BlueKeep["Functions"]["Notify"] = function(Title:string, Message:string)
+BlueKeep["Functions"]["Notify"] = function(Title:string, Message:string, Time:number)
 task.spawn(function()
     local ScreenGui = Instance.new("ScreenGui")
     local NotifGUI = Instance.new("Frame")
@@ -180,6 +180,7 @@ task.spawn(function()
     ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     ScreenGui.ResetOnSpawn = false
     NotifGUI.Name = "NotifGUI"
+    NotifGUI.AnchorPoint = Vector2.new(1, 1)
     NotifGUI.Parent = ScreenGui
     NotifGUI.BackgroundColor3 = Color3.fromRGB(0, 0, 121)
     NotifGUI.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -215,6 +216,20 @@ task.spawn(function()
     NotifBottomText.TextSize = 14.000
     NotifBottomText.TextWrapped = true
     NotifBottomText.Text = Message
+	local function Script_1()
+		local script = Instance.new('Script', NotifGUI)
+		local tweenInfo = TweenInfo.new(2, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+		local tween = ts:Create(script.Parent, tweenInfo, {Position = UDim2.new(0.992, 0,0.983, 0)})
+		tween:Play()
+
+		task.wait(Time)
+		tweenInfo = TweenInfo.new(5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+		tween = ts:Create(script.Parent, tweenInfo, {Position = UDim2.new(10, 0, 0.95, 0)})
+		tween:Play()
+		tween.Completed:Wait()
+		script.Parent:Destroy()
+	end
+	coroutine.wrap(Script_1)()
 end)
 end
 
@@ -315,3 +330,8 @@ end)
 BlueKeep["Functions"]["NewCommand"]("unloopgoto", "unloopgoto", "disables loopgoto", true, function()
     BlueKeep["Functions"]["StopLoop"]("Loopgoto")
 end)
+
+
+-- Done Setting Up! --
+
+BlueKeep["Functions"]["Notify"]("BlueKeep", "Loaded<3", 10)
