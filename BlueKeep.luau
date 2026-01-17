@@ -54,6 +54,7 @@ local players: Players = BlueKeep["Functions"]["Service"]("Players")
 local lp: Player = players.LocalPlayer  --ts does NOT need a comment
 local ts = BlueKeep["Functions"]["Service"]("TweenService")
 local core = BlueKeep["Functions"]["Service"]("CoreGui")
+local rs = BlueKeep["Functions"]["Service"]("RunService")
 
 BlueKeep["Uis"]["CmdList"] = function()
     local ScreenGui = Instance.new("ScreenGui")
@@ -238,9 +239,16 @@ BlueKeep["Functions"]["GetPlayer"] = function(partName: string) -- returns list 
     return {nil}
 end
 
-BlueKeep["Functions"]["Character"] = function(plr) -- returns character of entered player, if no player entered it returns lp character
+BlueKeep["Functions"]["Character"] = function(plr: Player) -- returns character of entered player, if no player entered it returns lp character
     plr = plr or lp
     return plr.Character or plr.CharacterAdded:Wait()
+end
+
+BlueKeep["Functions"]["StopLoop"] = function(loop: string)
+    if BlueKeep["Loops"][loop] then
+        BlueKeep["Loops"][loop]:Disconnect()
+        table.remove(BlueKeep["Loops"], BlueKeep["Loops"][loop])
+    end
 end
 
 BlueKeep["Functions"]["No Vel"] = function()
@@ -272,7 +280,7 @@ end
 
 -- Commands --
 BlueKeep["Functions"]["NewCommand"]("Goto", "Goto (Plr)", "Teleports to (Plr)", true, function(target)
-    local targets = BlueKeep["Functions"]["GetPlayer"](target)[1]
+    local targets = BlueKeep["Functions"]["GetPlayer"](target)
     for _,v in pairs(targets) do
         BlueKeep["Functions"]["No Vel"]()
         BlueKeep["Functions"]["Character"]():PivotTo(BlueKeep["Functions"]["Character"](v):GetPivot())
@@ -281,4 +289,29 @@ end)
 
 BlueKeep["Functions"]["NewCommand"]("cmds", "cmds", "Open cmd list", true, function()
     BlueKeep["Uis"]["CmdBarUi"]()
+end)
+
+BlueKeep["Functions"]["NewCommand"]("re", "re", "respawn at current pos", true, function()
+    local char = BlueKeep["Functions"]["Character"]()
+    local ogpos = char:GetPivot()
+    char:BreakJoints()
+    lp.CharacterAdded:Wait()
+    BlueKeep["Functions"]["Character"]():PivotTo(ogpos)
+end)
+
+BlueKeep["Functions"]["NewCommand"]("sit", "sit", "sits down", true, function()
+    BlueKeep["Functions"]["Character"]():WaitForChild("Humanoid").Sit = true
+end)
+
+BlueKeep["Functions"]["NewCommand"]("loopgoto", "loopgoto (plr)", "loop tp to target", true, function(target)
+    BlueKeep["Functions"]["StopLoop"]("Loopgoto")
+    target = BlueKeep["Functions"]["GetPlayer"](target)[1]
+    BlueKeep["Loops"]["Loopgoto"] = rs.Heartbeat:Connect(function()
+        BlueKeep["Functions"]["No Vel"]()
+        BlueKeep["Functions"]["Character"]():PivotTo(BlueKeep["Functions"]["Character"](target):GetPivot())
+    end)
+end)
+
+BlueKeep["Functions"]["NewCommand"]("unloopgoto", "unloopgoto", "disables loopgoto", true, function()
+    BlueKeep["Functions"]["StopLoop"]("Loopgoto")
 end)
