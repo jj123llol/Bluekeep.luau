@@ -17,7 +17,8 @@ getgenv().BlueKeep = {
     ["Services"] = {},
     ["Functions"]= {},
     ["Commands"] = {},
-    ["Loops"] = {}
+    ["Loops"] = {},
+    ["Uis"] = {}
 }
 -- this way we dont accidently import multiple of the same service..
 BlueKeep["Functions"]["Service"] = function(Name: string)
