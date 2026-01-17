@@ -55,7 +55,7 @@ local lp: Player = players.LocalPlayer  --ts does NOT need a comment
 local ts = BlueKeep["Functions"]["Service"]("TweenService")
 local core = BlueKeep["Functions"]["Service"]("CoreGui")
 
-BlueKeep["Uis"]["CmdBarUi"] = function()
+BlueKeep["Uis"]["CmdList"] = function()
     local ScreenGui = Instance.new("ScreenGui")
     local CmdList = Instance.new("Frame")
     local UICorner = Instance.new("UICorner")
@@ -197,7 +197,7 @@ task.spawn(function()
     NotifText.TextScaled = true
     NotifText.TextSize = 14.000
     NotifText.TextWrapped = true
-    NotifText.Text = title
+    NotifText.Text = Title
     NotifText.TextYAlignment = Enum.TextYAlignment.Top
     UICorner_2.Parent = NotifText
     NotifBottomText.Name = "NotifBottomText"
@@ -280,5 +280,5 @@ BlueKeep["Functions"]["NewCommand"]("Goto", "Goto (Plr)", "Teleports to (Plr)", 
 end)
 
 BlueKeep["Functions"]["NewCommand"]("cmds", "cmds", "Open cmd list", true, function()
-    BlueKeep["Uis"]["CmdBarUi"]
+    BlueKeep["Uis"]["CmdBarUi"]()
 end)
