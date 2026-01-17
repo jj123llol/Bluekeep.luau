@@ -3,6 +3,8 @@
 ```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/jj123llol/Bluekeep.luau/refs/heads/main/BlueKeep.luau", true))()
 ```
+# Discord
+https://discord.gg/zTQ4pjwVWR
 
 # Extra
 Developed by really_ant., and luageek.<br>
