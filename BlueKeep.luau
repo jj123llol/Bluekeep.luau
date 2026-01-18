@@ -18,8 +18,10 @@ getgenv().BlueKeep = {
     ["Functions"]= {},
     ["Commands"] = {},
     ["Loops"] = {},
-    ["Uis"] = {}
+    ["Uis"] = {},
+    ["KeyBinds"] = {}
 }
+BlueKeep["KeyBinds"]["CmdBar"] = "Minus"
 -- this way we dont accidently import multiple of the same service..
 BlueKeep["Functions"]["Service"] = function(Name: string)
     if BlueKeep["Services"][Name] then return BlueKeep["Services"][Name] end
@@ -55,6 +57,7 @@ local lp: Player = players.LocalPlayer  --ts does NOT need a comment
 local ts = BlueKeep["Functions"]["Service"]("TweenService")
 local core = BlueKeep["Functions"]["Service"]("CoreGui")
 local rs = BlueKeep["Functions"]["Service"]("RunService")
+local uis = BlueKeep["Functions"]["Service"]("UserInputService")
 
 BlueKeep["Uis"]["CmdList"] = function()
     local ScreenGui = Instance.new("ScreenGui")
@@ -359,7 +362,81 @@ BlueKeep["Functions"]["NewCommand"]("clip", "clip", "disables noclip", true, fun
     BlueKeep["Functions"]["SetCollison"](true)
 end)
 
+-- Command bar --
+local ScreenGui = Instance.new("ScreenGui")
+local CmdBar = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local stars2 = Instance.new("Frame")
+local ImageLabel = Instance.new("ImageLabel")
+local TextBox = Instance.new("TextBox")
 
+ScreenGui.Parent = core
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.ResetOnSpawn = false
+
+
+CmdBar.AnchorPoint = Vector2.new(.5, .5)
+CmdBar.Name = "CmdBar"
+CmdBar.Parent = ScreenGui
+CmdBar.BackgroundColor3 = Color3.fromRGB(0, 0, 121)
+CmdBar.BorderColor3 = Color3.fromRGB(0, 0, 0)
+CmdBar.BorderSizePixel = 0
+CmdBar.Position = UDim2.new(0.5, 0, 0.8, 0)
+CmdBar.Size = UDim2.new(0, 349, 0, 100)
+
+UICorner.Parent = CmdBar
+
+stars2.Name = "stars2"
+stars2.Parent = CmdBar
+stars2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+stars2.BackgroundTransparency = 1.000
+stars2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+stars2.BorderSizePixel = 0
+stars2.Position = UDim2.new(0, 0, 0.100000001, 0)
+stars2.Size = UDim2.new(0, 300, 0, 450)
+
+ImageLabel.Parent = stars2
+ImageLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ImageLabel.BackgroundTransparency = 1.000
+ImageLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ImageLabel.BorderSizePixel = 0
+ImageLabel.Position = UDim2.new(0, 0, -0.0222222228, 0)
+ImageLabel.Size = UDim2.new(0, 349, 0, 100)
+ImageLabel.Image = "rbxassetid://7209784983"
+ImageLabel.ScaleType = Enum.ScaleType.Crop
+
+TextBox.Parent = CmdBar
+TextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextBox.BackgroundTransparency = 1.000
+TextBox.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextBox.BorderSizePixel = 0
+TextBox.Position = UDim2.new(0.0315186232, 0, 6.10351549e-07, 0)
+TextBox.Size = UDim2.new(0, 326, 0, 90)
+TextBox.Font = Enum.Font.FredokaOne
+TextBox.PlaceholderText = "Commands Here"
+TextBox.Text = ""
+TextBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+TextBox.TextScaled = true
+TextBox.TextSize = 14.000
+TextBox.TextWrapped = true
+
+BlueKeep['Loops']['cmdbar_Toggle'] = uis.InputBegan:Connect(function(input, chting)
+	if input.KeyCode.Name == BlueKeep["KeyBinds"]["CmdBar"] and not chting then
+        task.wait()
+		TextBox:CaptureFocus()
+	end
+end)
+
+TextBox.FocusLost:Connect(function(ep)
+    if not ep then return end
+	local args = TextBox.Text:split(" ")
+	local cmd = args[1]
+
+	TextBox.Text = ""
+	table.remove(args,1)
+
+    BlueKeep["Functions"]["RunCommand"](cmd, args)
+end)
 -- Done Setting Up! --
 
 local function getlen(t:{any}) -- #table does not work on bad executors..
