@@ -222,12 +222,6 @@ BlueKeep["Uis"]["CmdList"] = function()
             hover_Text.Position = UDim2.new(x, 0, y, 0)
         end)
 
-        Command.MouseButton1Click:Connect(function()
-            local txt = core:FindFirstChild("CmdBar"):FindFirstChildOfClass("TextLabel")
-            txt.Text = Name
-            txt:CaptureFocus()
-        end)
-
     end
     for name,cmd in pairs(BlueKeep["Commands"]) do
         addcmd(cmd["CmdList"], cmd["Description"], name)
