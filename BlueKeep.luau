@@ -187,7 +187,7 @@ BlueKeep["Uis"]["CmdList"] = function()
     ForCmds.Size = UDim2.new(0, 292, 0, 439)
     ForCmds.AutomaticCanvasSize = Enum.AutomaticSize.Y
 
-    local function addcmd(Text:string, Description:string)
+    local function addcmd(Text:string, Description:string, Name:string)
         local Command = Instance.new("TextLabel")
         local UICorner_3 = Instance.new("UICorner")
         Command.Name = Text
@@ -222,9 +222,15 @@ BlueKeep["Uis"]["CmdList"] = function()
             hover_Text.Position = UDim2.new(x, 0, y, 0)
         end)
 
+        Command.MouseButton1Click:Connect(function()
+            local txt = core:FindFirstChild("CmdBar"):FindFirstChildOfClass("TextLabel")
+            txt.Text = Name
+            txt:CaptureFocus()
+        end)
+
     end
-    for _,cmd in pairs(BlueKeep["Commands"]) do
-        addcmd(cmd["CmdList"], cmd["Description"])
+    for name,cmd in pairs(BlueKeep["Commands"]) do
+        addcmd(cmd["CmdList"], cmd["Description"], name)
     end
     UIGridLayout.Parent = ForCmds
     UIGridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
@@ -605,6 +611,7 @@ local TextBox = Instance.new("TextBox")
 ScreenGui.Parent = core
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.ResetOnSpawn = false
+ScreenGui.Name = "CmdBar"
 
 
 CmdBar.AnchorPoint = Vector2.new(.5, .5)
