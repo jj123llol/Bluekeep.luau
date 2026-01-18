@@ -80,7 +80,7 @@ BlueKeep["Uis"]["CmdList"] = function()
     hover_Text.TextWrapped = true
     hover_Text.Text = ""
     hover_Text.TextYAlignment = Enum.TextYAlignment.Top
-    hover_Text.Transparency = 1
+    hover_Text.BackgroundTransparency = 1
     UICorner_4.Parent = hover_Text
     local CmdList = Instance.new("Frame")
     local UICorner = Instance.new("UICorner")
@@ -194,8 +194,6 @@ BlueKeep["Uis"]["CmdList"] = function()
         
         Command.MouseMoved:Connect(function()
 			local mouse = lp:GetMouse()
-			hover_Text.BackgroundTransparency = 0
-			hover_Text.Text = Description
 			hover_Text.Position = UDim2.new((mouse.x/mouse.ViewSizeX) + .000050, 0, (mouse.y/mouse.ViewSizeY), 0)
         end)
 
@@ -207,7 +205,6 @@ BlueKeep["Uis"]["CmdList"] = function()
 
     end
     for _,cmd in pairs(BlueKeep["Commands"]) do
-        print(cmd["Description"])
         addcmd(cmd["CmdList"], cmd["Description"])
     end
     UIGridLayout.Parent = ForCmds
