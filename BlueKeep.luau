@@ -223,10 +223,6 @@ BlueKeep["Uis"]["CmdList"] = function()
         end)
 
     end
-    for name,cmd in pairs(BlueKeep["Cmds"]) do
-        task.wait(1/30) -- tons of commands would freeze the game on load. this should fix/help fix that
-        addcmd(cmd["CmdList"], cmd["Description"], name)
-    end
     UIGridLayout.Parent = ForCmds
     UIGridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
     UIGridLayout.CellSize = UDim2.new(0, 250, 0, 80)
@@ -279,6 +275,10 @@ BlueKeep["Uis"]["CmdList"] = function()
 	    dragify(script.Parent)
     end
     coroutine.wrap(GUIKCM_fake_script)()
+    for name,cmd in pairs(BlueKeep["Cmds"]) do
+        task.wait(1/30) -- tons of commands would freeze the game on load. this should fix/help fix that
+        addcmd(cmd["CmdList"], cmd["Description"], name)
+    end
 end
 
 BlueKeep["Funcs"]["Notify"] = function(Title:string, Message:string, Time:number)
