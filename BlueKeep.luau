@@ -341,4 +341,12 @@ end)
 
 -- Done Setting Up! --
 
-BlueKeep["Functions"]["Notify"]("BlueKeep", `Loaded<3\n {table.getn(BlueKeep["Commands"])} commands loaded.`, 10)
+local function getlen(t:{any}) -- #table does not work on bad executors..
+    local h = 0
+    for _, v in pairs(t) do
+        h+=1
+    end
+    return h 
+end
+
+BlueKeep["Functions"]["Notify"]("BlueKeep", `Loaded<3\n {getlen(BlueKeep["Commands"])} commands loaded.`, 10)
