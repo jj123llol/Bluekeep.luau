@@ -341,7 +341,7 @@ task.spawn(function()
 		tween = ts:Create(script.Parent, tweenInfo, {Position = UDim2.new(3, 0, 0.95, 0)})
 		tween:Play()
 		tween.Completed:Wait()
-		script.Parent:Destroy()
+		ScreenGui:Destroy()
 	end
 	coroutine.wrap(Script_1)()
 end)
