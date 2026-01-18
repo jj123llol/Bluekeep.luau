@@ -30,6 +30,7 @@ BlueKeep["Functions"]["Service"] = function(Name: string)
     BlueKeep["Services"][Name] = cloneref(game:GetService(Name))
     return BlueKeep["Services"][Name]
 end
+BlueKeep["Functions"]["Camera"] = function() return game.Workspace.CurrentCamera end
 
 -- adds new commands to BlueKeep.luau
 BlueKeep["Functions"]["NewCommand"] = function(Name:string, CmdList: string, Description: string, SplitArgs: boolean, func: callback)
@@ -424,6 +425,82 @@ end)
 BlueKeep["Functions"]["NewCommand"]("clip", "clip", "disables noclip", true, function()
     BlueKeep["Functions"]["StopLoop"]("Noclip")
     BlueKeep["Functions"]["SetCollison"](true)
+end)
+
+local a = false
+local c = BlueKeep["Functions"]["Camera"]().CFrame.Position
+local d = BlueKeep["Functions"]["Camera"]().CFrame.Rotation
+local function e()
+    if a then
+        BlueKeep["Functions"]["Camera"]().CFrame = CFrame.new(c, c + d.LookVector)
+        BlueKeep["Functions"]["Camera"]().CameraType = Enum.CameraType.Custom
+        a = false
+    else
+        c = BlueKeep["Functions"]["Camera"]().CFrame.Position
+        d = BlueKeep["Functions"]["Camera"]().CFrame.Rotation
+        BlueKeep["Functions"]["Camera"]().CameraType = Enum.CameraType.Scriptable
+        a = true
+    end
+end
+local function f()
+    if a then
+        local g = Vector3.new()
+        if uis:IsKeyDown(Enum.KeyCode.W) then
+            g = g + BlueKeep["Functions"]["Camera"]().CFrame.LookVector
+        end
+        if uis:IsKeyDown(Enum.KeyCode.S) then
+            g = g - BlueKeep["Functions"]["Camera"]().CFrame.LookVector
+        end
+        if uis:IsKeyDown(Enum.KeyCode.A) then
+            g = g - BlueKeep["Functions"]["Camera"]().CFrame.RightVector
+        end
+        if uis:IsKeyDown(Enum.KeyCode.D) then
+            g = g + BlueKeep["Functions"]["Camera"]().CFrame.RightVector
+        end
+        if uis:IsKeyDown(Enum.KeyCode.Space) then
+            g = g + gBlueKeep["Functions"]["Camera"]().CFrame.UpVector
+        end
+        if uis:IsKeyDown(Enum.KeyCode.LeftControl) then
+            g = g - BlueKeep["Functions"]["Camera"]().CFrame.UpVector
+        end
+        BlueKeep["Functions"]["Camera"]().CFrame = BlueKeep["Functions"]["Camera"]().CFrame + g * 0.1
+    end
+end
+rs.RenderStepped:Connect(
+    function()
+        f()
+    end
+)
+BlueKeep["Functions"]["NewCommand"](
+    "freecam",
+    "freecam",
+    "Toggles freecam my clanka",
+    true,
+    function()
+        e()
+    end
+)
+
+BlueKeep["Functions"]["NewCommand"]("view (plr)", "view (plr)", "Views player", true, function(target)
+    BlueKeep["Functions"]["StopLoop"]("Viewing")
+    target = BlueKeep["Functions"]["GetPlayer"](target)[1]
+	local char = BlueKeep["Functions"]["Character"](target)
+
+	if char and char:FindFirstChild("Humanoid") then
+		BlueKeep["Functions"]["Notify"]("Viewing", target.Name, 10)
+		BlueKeep["Functions"]["Camera"]().CameraSubject = target.Character:WaitForChild("Humanoid")
+		BlueKeep["Loops"]["viewing"] = target.CharacterAdded:Connect(function()
+			local hum = target.Character:WaitForChild("Humanoid")
+			BlueKeep["Functions"]["Camera"]().CameraSubject = hum
+		end)
+	else
+		BlueKeep["Functions"]["Notify"]("View", "Failed To Find Character Or Humanoid", 5)
+	end
+end)
+
+BlueKeep["Functions"]["NewCommand"]("unview", "unview", "Unviews player", true, function()
+    BlueKeep["Functions"]["StopLoop"]("Viewing")
+    BlueKeep["Functions"]["Camera"]().CameraSubject = BlueKeep["Functions"]["Character"]():WaitForChild("Humanoid")
 end)
 
 -- Command bar --
