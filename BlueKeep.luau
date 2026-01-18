@@ -427,58 +427,76 @@ BlueKeep["Functions"]["NewCommand"]("clip", "clip", "disables noclip", true, fun
     BlueKeep["Functions"]["SetCollison"](true)
 end)
 
-local a = false
-local c = BlueKeep["Functions"]["Camera"]().CFrame.Position
-local d = BlueKeep["Functions"]["Camera"]().CFrame.Rotation
-local function e()
-    if a then
-        BlueKeep["Functions"]["Camera"]().CFrame = CFrame.new(c, c + d.LookVector)
-        BlueKeep["Functions"]["Camera"]().CameraType = Enum.CameraType.Custom
-        a = false
-    else
-        c = BlueKeep["Functions"]["Camera"]().CFrame.Position
-        d = BlueKeep["Functions"]["Camera"]().CFrame.Rotation
-        BlueKeep["Functions"]["Camera"]().CameraType = Enum.CameraType.Scriptable
-        a = true
-    end
-end
-local function f()
-    if a then
-        local g = Vector3.new()
-        if uis:IsKeyDown(Enum.KeyCode.W) then
-            g = g + BlueKeep["Functions"]["Camera"]().CFrame.LookVector
-        end
-        if uis:IsKeyDown(Enum.KeyCode.S) then
-            g = g - BlueKeep["Functions"]["Camera"]().CFrame.LookVector
-        end
-        if uis:IsKeyDown(Enum.KeyCode.A) then
-            g = g - BlueKeep["Functions"]["Camera"]().CFrame.RightVector
-        end
-        if uis:IsKeyDown(Enum.KeyCode.D) then
-            g = g + BlueKeep["Functions"]["Camera"]().CFrame.RightVector
-        end
-        if uis:IsKeyDown(Enum.KeyCode.Space) then
-            g = g + gBlueKeep["Functions"]["Camera"]().CFrame.UpVector
-        end
-        if uis:IsKeyDown(Enum.KeyCode.LeftControl) then
-            g = g - BlueKeep["Functions"]["Camera"]().CFrame.UpVector
-        end
-        BlueKeep["Functions"]["Camera"]().CFrame = BlueKeep["Functions"]["Camera"]().CFrame + g * 0.1
-    end
-end
-rs.RenderStepped:Connect(
-    function()
-        f()
-    end
-)
 BlueKeep["Functions"]["NewCommand"](
-    "freecam",
-    "freecam",
-    "Toggles freecam my clanka",
-    true,
-    function()
-        e()
-    end
+	"freecam",
+	"freecam (speed)",
+	"Toggle freecam (camera noclip)",
+	true,
+	function(speed)
+
+		local cam = BlueKeep["Functions"]["Camera"]()
+		speed = speed or 1.4
+		local sensitivity = 0.0025
+
+		if BlueKeep["Variables"]["FreecamEnabled"] then
+			
+			BlueKeep["Variables"]["FreecamEnabled"] = false
+			cam.CameraType = Enum.CameraType.Custom
+			uis.MouseBehavior = Enum.MouseBehavior.Default
+			BlueKeep["Functions"]["Notify"]("Freecam", "Disabled", 2)
+			return
+		end
+
+	
+		BlueKeep["Variables"]["FreecamEnabled"] = true
+		cam.CameraType = Enum.CameraType.Scriptable
+		uis.MouseBehavior = Enum.MouseBehavior.LockCenter
+
+		local cf = cam.CFrame
+		local rx, ry = 0, 0
+
+		local moveConn, lookConn
+
+		moveConn = rs.RenderStepped:Connect(function()
+			if not BlueKeep["Variables"]["FreecamEnabled"] then
+				moveConn:Disconnect()
+				if lookConn then lookConn:Disconnect() end
+				return
+			end
+
+			local dir = Vector3.zero
+
+			if uis:IsKeyDown(Enum.KeyCode.W) then dir += Vector3.new(0,0,-1) end
+			if uis:IsKeyDown(Enum.KeyCode.S) then dir += Vector3.new(0,0,1) end
+			if uis:IsKeyDown(Enum.KeyCode.A) then dir += Vector3.new(-1,0,0) end
+			if uis:IsKeyDown(Enum.KeyCode.D) then dir += Vector3.new(1,0,0) end
+			if uis:IsKeyDown(Enum.KeyCode.Space) then dir += Vector3.new(0,1,0) end
+			if uis:IsKeyDown(Enum.KeyCode.LeftControl) then dir += Vector3.new(0,-1,0) end
+
+			if dir.Magnitude > 0 then
+				dir = dir.Unit
+			end
+
+			cf = cf * CFrame.new(dir * speed)
+			cam.CFrame = cf
+		end)
+
+		lookConn = uis.InputChanged:Connect(function(input, gpe)
+			if gpe or not BlueKeep["Variables"]["FreecamEnabled"] then return end
+
+			if input.UserInputType == Enum.UserInputType.MouseMovement then
+				rx -= input.Delta.Y * sensitivity
+				ry -= input.Delta.X * sensitivity
+
+				rx = math.clamp(rx, -math.rad(85), math.rad(85))
+
+				cf = CFrame.new(cf.Position) * CFrame.Angles(rx, ry, 0)
+				cam.CFrame = cf
+			end
+		end)
+
+		BlueKeep["Functions"]["Notify"]("Freecam", "Enabled", 2)
+	end
 )
 
 BlueKeep["Functions"]["NewCommand"]("view (plr)", "view (plr)", "Views player", true, function(target)
