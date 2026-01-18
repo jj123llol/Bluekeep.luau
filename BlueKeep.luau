@@ -19,9 +19,11 @@ getgenv().BlueKeep = {
     ["Commands"] = {},
     ["Loops"] = {},
     ["Uis"] = {},
-    ["KeyBinds"] = {}
+    ["KeyBinds"] = {},
+    ["Variables"] = {},
 }
 BlueKeep["KeyBinds"]["CmdBar"] = "Minus"
+BlueKeep["Variables"]["VoidHeight"] = workspace.FallenPartsDestroyHeight
 -- this way we dont accidently import multiple of the same service..
 BlueKeep["Functions"]["Service"] = function(Name: string)
     if BlueKeep["Services"][Name] then return BlueKeep["Services"][Name] end
@@ -377,8 +379,20 @@ end)
 BlueKeep["Functions"]["NewCommand"]("re", "re", "respawn at current pos", true, function()
     local char = BlueKeep["Functions"]["Character"]()
     local ogpos = char:GetPivot()
+    if replicatesignal then
+        replicatesignal(lp.ConnectDiedSignalBackend)
+        task.wait(players.RespawnTime - 0.1)
+        replicatesignal(lp.Kill)
+        lp.CharacterAdded:Wait():WaitForChild("Humanoid")
+        BlueKeep["Functions"]["Character"]():PivotTo(ogpos)
+        return
+    end
+	workspace.FallenPartsDestroyHeight = 0/0
+	char:PivotTo(CFrame.new(5235, BlueKeep["Variables"]["VoidHeight"] - 100, 5235))
+	task.wait(.1)
+	workspace.FallenPartsDestroyHeight = BlueKeep["Variables"]["VoidHeight"]
     char:BreakJoints()
-    lp.CharacterAdded:Wait()
+    lp.CharacterAdded:Wait():WaitForChild("Humanoid")
     BlueKeep["Functions"]["Character"]():PivotTo(ogpos)
 end)
 
