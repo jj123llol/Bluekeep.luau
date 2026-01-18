@@ -576,6 +576,23 @@ BlueKeep["Functions"]["NewCommand"]("unview", "unview", "Unviews player", true, 
     BlueKeep["Functions"]["Camera"]().CameraSubject = BlueKeep["Functions"]["Character"]():WaitForChild("Humanoid")
 end)
 
+BlueKeep["Functions"]["NewCommand"]("novoid", "novoid", "removes the void", true, function()
+    workspace.FallenPartsDestroyHeight = 0/0
+end)
+
+BlueKeep["Functions"]["NewCommand"]("unnovoid", "unnovoid", "brings void back", true, function()
+    workspace.FallenPartsDestroyHeight = BlueKeep["Variables"]["VoidHeight"]
+end)
+
+BlueKeep["Functions"]["NewCommand"]("voidcf", "voidcf", "voids people loopgoto'ing or banging you.", true, function()
+    local orgpos = BlueKeep["Functions"]["Character"]():GetPivot()
+    workspace.FallenPartsDestroyHeight = 0/0
+    BlueKeep["Functions"]["Character"]():PivotTo(CFrame.new(0, BlueKeep["Variables"]["VoidHeight"], 0))
+    task.wait(2)
+    BlueKeep["Functions"]["Character"]():PivotTo(orgpos)
+    workspace.FallenPartsDestroyHeight = BlueKeep["Variables"]["VoidHeight"]
+end)
+
 -- Command bar --
 local ScreenGui = Instance.new("ScreenGui")
 local CmdBar = Instance.new("Frame")
