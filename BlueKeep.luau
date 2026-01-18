@@ -282,6 +282,15 @@ BlueKeep["Functions"]["No Vel"] = function()
     end
 end
 
+BlueKeep["Functions"]["SetCollison"] = function(val:boolean)
+   local char = BlueKeep["Functions"]["Character"]()
+   for _,v in pairs(char:GetDescendants()) do
+        pcall(function()
+            v.CanCollide = val
+        end)
+   end
+end
+
 -- set up files --
 local checkfor = {
     "BlueKeep",
@@ -336,6 +345,18 @@ end)
 
 BlueKeep["Functions"]["NewCommand"]("unloopgoto", "unloopgoto", "disables loopgoto", true, function()
     BlueKeep["Functions"]["StopLoop"]("Loopgoto")
+end)
+
+BlueKeep["Functions"]["NewCommand"]("noclip", "noclip", "walk through walls", true, function()
+    BlueKeep["Functions"]["StopLoop"]("Noclip")
+    BlueKeep["Loops"]["Noclip"] = rs.Heartbeat:Connect(function()
+        BlueKeep["Functions"]["SetCollison"](false)
+    end)
+end)
+
+BlueKeep["Functions"]["NewCommand"]("clip", "clip", "disables noclip", true, function()
+    BlueKeep["Functions"]["StopLoop"]("Noclip")
+    BlueKeep["Functions"]["SetCollison"](true)
 end)
 
 
