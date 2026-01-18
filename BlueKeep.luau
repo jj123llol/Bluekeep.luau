@@ -482,11 +482,13 @@ BlueKeep["Functions"]["NewCommand"](
 			cam.CameraType = Enum.CameraType.Custom
 			uis.MouseBehavior = Enum.MouseBehavior.Default
 			BlueKeep["Functions"]["Notify"]("Freecam", "Disabled", 2)
+            BlueKeep["Functions"]["Character"]().HumanoidRootPart.Anchored = false
 			return
 		end
 
 	
 		BlueKeep["Variables"]["FreecamEnabled"] = true
+        BlueKeep["Functions"]["Character"]().HumanoidRootPart.Anchored = true
 		cam.CameraType = Enum.CameraType.Scriptable
 		uis.MouseBehavior = Enum.MouseBehavior.LockCenter
 
