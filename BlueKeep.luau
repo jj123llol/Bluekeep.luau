@@ -62,6 +62,15 @@ local core = BlueKeep["Functions"]["Service"]("CoreGui")
 local rs = BlueKeep["Functions"]["Service"]("RunService")
 local uis = BlueKeep["Functions"]["Service"]("UserInputService")
 
+BlueKeep["Functions"]["PlayAudio"] = function(id:string)
+    local sound = Instance.new("Sound")
+    sound.SoundId = `rbxassetid://{tostring(id)}`
+    sound.Parent = BlueKeep["Functions"]["Service"]("SoundService")
+    sound:Play()
+    sound.Ended:Wait()
+    sound:Destroy()
+end
+
 BlueKeep["Uis"]["CmdList"] = function()
     local ScreenGui = Instance.new("ScreenGui")
     local hover_Text = Instance.new("TextLabel")
@@ -127,6 +136,7 @@ BlueKeep["Uis"]["CmdList"] = function()
     ExitBTN.TextSize = 14.000
     ExitBTN.TextWrapped = true
     ExitBTN.MouseButton1Click:Connect(function()
+        BlueKeep["Functions"]["PlayAudio"](139800881181209)
         ScreenGui:Destroy()
     end)
     BKL.Name = "BKL"
@@ -263,10 +273,7 @@ end
 BlueKeep["Functions"]["Notify"] = function(Title:string, Message:string, Time:number)
 task.spawn(function()
     repeat task.wait() until not core:FindFirstChild("Notification!") -- dont play multiple at once
-    local sound = Instance.new("Sound")
-    sound.SoundId = "rbxassetid://124951621656853"
-    sound.Parent = BlueKeep["Functions"]["Service"]("SoundService")
-    sound:Play()
+    BlueKeep["Functions"]["PlayAudio"](124951621656853)
     local ScreenGui = Instance.new("ScreenGui")
     local NotifGUI = Instance.new("Frame")
     local UICorner = Instance.new("UICorner")
@@ -326,7 +333,6 @@ task.spawn(function()
 		tween:Play()
 		tween.Completed:Wait()
 		script.Parent:Destroy()
-        sound:Destroy()
 	end
 	coroutine.wrap(Script_1)()
 end)
