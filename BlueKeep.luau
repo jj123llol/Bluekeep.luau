@@ -380,6 +380,7 @@ BlueKeep["Functions"]["NewCommand"]("re", "re", "respawn at current pos", true, 
     local char = BlueKeep["Functions"]["Character"]()
     local ogpos = char:GetPivot()
     if replicatesignal then
+        BlueKeep["Functions"]["Notify"]("Respawning", `Respawning in {players.RespawnTime}`, players.RespawnTime)
         replicatesignal(lp.ConnectDiedSignalBackend)
         task.wait(players.RespawnTime - 0.1)
         replicatesignal(lp.Kill)
