@@ -348,6 +348,18 @@ task.spawn(function()
 end)
 end
 
+BlueKeep["Funcs"]["GetKey"] = function()
+    local key = nil
+    BlueKeep["Funcs"]["Notify"]("Setting bind...", "Press a key!", 5)
+    local keydown; keydown = uis.InputBegan:Connect(function(keyz, process)
+        if process then return end
+        key = keyz
+        keydown:Disconnect()
+    end)
+    repeat task.wait() until key ~= nil
+    return key.KeyCode.Name
+end
+
 BlueKeep["Funcs"]["GetPlayer"] = function(partName: string) -- returns list of target(s)
     partName = partName:lower()
     local plrs = players:GetPlayers()
