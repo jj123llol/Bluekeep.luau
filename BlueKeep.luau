@@ -554,7 +554,7 @@ BlueKeep["Functions"]["NewCommand"](
 	end
 )
 
-BlueKeep["Functions"]["NewCommand"]("view (plr)", "view (plr)", "Views player", true, function(target)
+BlueKeep["Functions"]["NewCommand"]("view", "view (plr)", "Views player", true, function(target)
     BlueKeep["Functions"]["StopLoop"]("Viewing")
     target = BlueKeep["Functions"]["GetPlayer"](target)[1]
 	local char = BlueKeep["Functions"]["Character"](target)
