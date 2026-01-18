@@ -188,7 +188,6 @@ BlueKeep["Uis"]["CmdList"] = function()
 			local mouse = lp:GetMouse()
 			hover_Text.BackgroundTransparency = 0
 			hover_Text.Text = Description
-            print(`Set to {Description}`)
 			hover_Text.Position = UDim2.new((x/mouse.ViewSizeX) + .000050, 0, (y/mouse.ViewSizeY), 0)
         end)
         
@@ -263,7 +262,7 @@ end
 
 BlueKeep["Functions"]["Notify"] = function(Title:string, Message:string, Time:number)
 task.spawn(function()
-    repeat task.wait() until not core:FindFirstChild("Notification") -- dont play multiple at once
+    repeat task.wait() until not core:FindFirstChild("Notification!") -- dont play multiple at once
     local sound = Instance.new("Sound")
     sound.SoundId = "rbxassetid://7383525713"
     sound.Parent = BlueKeep["Functions"]["Service"]("SoundService")
