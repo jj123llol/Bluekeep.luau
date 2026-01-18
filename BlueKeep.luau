@@ -341,4 +341,4 @@ end)
 
 -- Done Setting Up! --
 
-BlueKeep["Functions"]["Notify"]("BlueKeep", "Loaded<3", 10)
+BlueKeep["Functions"]["Notify"]("BlueKeep", `Loaded<3\n {#BlueKeep["Commands"]} commands loaded.`, 10)
