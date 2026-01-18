@@ -16,27 +16,27 @@ if BlueKeep then return error("Bluekeep.luau is already running!") end
 -- Setting Up! --
 
 getgenv().BlueKeep = {
-    ["Services"] = {},
-    ["Functions"]= {},
-    ["Commands"] = {},
+    ["Servs"] = {},
+    ["Funcs"]= {},
+    ["Cmds"] = {},
     ["Loops"] = {},
     ["Uis"] = {},
-    ["KeyBinds"] = {},
-    ["Variables"] = {},
+    ["Binds"] = {},
+    ["Vars"] = {},
 }
-BlueKeep["KeyBinds"]["CmdBar"] = "Minus"
-BlueKeep["Variables"]["VoidHeight"] = workspace.FallenPartsDestroyHeight
+BlueKeep["Binds"]["CmdBar"] = "Minus"
+BlueKeep["Vars"]["VoidHeight"] = workspace.FallenPartsDestroyHeight
 -- this way we dont accidently import multiple of the same service..
-BlueKeep["Functions"]["Service"] = function(Name: string)
-    if BlueKeep["Services"][Name] then return BlueKeep["Services"][Name] end
-    BlueKeep["Services"][Name] = cloneref(game:GetService(Name))
-    return BlueKeep["Services"][Name]
+BlueKeep["Funcs"]["Service"] = function(Name: string)
+    if BlueKeep["Servs"][Name] then return BlueKeep["Servs"][Name] end
+    BlueKeep["Servs"][Name] = cloneref(game:GetService(Name))
+    return BlueKeep["Servs"][Name]
 end
-BlueKeep["Functions"]["Camera"] = function() return game.Workspace.CurrentCamera end
+BlueKeep["Funcs"]["Camera"] = function() return game.Workspace.CurrentCamera end
 
 -- adds new commands to BlueKeep.luau
-BlueKeep["Functions"]["NewCommand"] = function(Name:string, CmdList: string, Description: string, SplitArgs: boolean, func: callback)
-    BlueKeep["Commands"][Name or "print"] = {
+BlueKeep["Funcs"]["NewCommand"] = function(Name:string, CmdList: string, Description: string, SplitArgs: boolean, func: callback)
+    BlueKeep["Cmds"][Name or "print"] = {
         ["CmdList"] = CmdList or "print (Text)",
         ["Description"] = Description or "No Description provided",
         ["SplitArgs"] = SplitArgs or true,
@@ -44,31 +44,31 @@ BlueKeep["Functions"]["NewCommand"] = function(Name:string, CmdList: string, Des
     }
 end
 
-BlueKeep["Functions"]["RunCommand"] = function(Name: string, args: {any}) -- attempts to run command with given args
-    if not BlueKeep["Commands"][Name] then return false, error(`Failed to find command {Name}!`) end
-    if BlueKeep["Commands"][Name]["SplitArgs"] then
-        BlueKeep["Commands"][Name]["Function"](table.unpack(args))
+BlueKeep["Funcs"]["RunCommand"] = function(Name: string, args: {any}) -- attempts to run command with given args
+    if not BlueKeep["Cmds"][Name] then return false, error(`Failed to find command {Name}!`) end
+    if BlueKeep["Cmds"][Name]["SplitArgs"] then
+        BlueKeep["Cmds"][Name]["Function"](table.unpack(args))
     else
         local str = ""
         for _,v in pairs(args) do
             str = str..v
         end
-        BlueKeep["Commands"][Name]["Function"](str)
+        BlueKeep["Cmds"][Name]["Function"](str)
     end
     return true
 end
-local players: Players = BlueKeep["Functions"]["Service"]("Players")
+local players: Players = BlueKeep["Funcs"]["Service"]("Players")
 local lp: Player = players.LocalPlayer  --ts does NOT need a comment
-local ts = BlueKeep["Functions"]["Service"]("TweenService")
-local core = BlueKeep["Functions"]["Service"]("CoreGui")
-local rs = BlueKeep["Functions"]["Service"]("RunService")
-local uis = BlueKeep["Functions"]["Service"]("UserInputService")
+local ts = BlueKeep["Funcs"]["Service"]("TweenService")
+local core = BlueKeep["Funcs"]["Service"]("CoreGui")
+local rs = BlueKeep["Funcs"]["Service"]("RunService")
+local uis = BlueKeep["Funcs"]["Service"]("UserInputService")
 
-BlueKeep["Functions"]["PlayAudio"] = function(id:string, looped:boolean)
+BlueKeep["Funcs"]["PlayAudio"] = function(id:string, looped:boolean)
 task.spawn(function()
     local sound = Instance.new("Sound")
     sound.SoundId = `rbxassetid://{tostring(id or 1)}`
-    sound.Parent = BlueKeep["Functions"]["Service"]("SoundService")
+    sound.Parent = BlueKeep["Funcs"]["Service"]("SoundService")
     sound.Looped = looped or false
     sound:Play()
     if not looped then
@@ -145,7 +145,7 @@ BlueKeep["Uis"]["CmdList"] = function()
     ExitBTN.TextSize = 14.000
     ExitBTN.TextWrapped = true
     ExitBTN.MouseButton1Click:Connect(function()
-        BlueKeep["Functions"]["PlayAudio"](139800881181209)
+        BlueKeep["Funcs"]["PlayAudio"](139800881181209)
         ScreenGui:Destroy()
     end)
     BKL.Name = "BKL"
@@ -223,7 +223,7 @@ BlueKeep["Uis"]["CmdList"] = function()
         end)
 
     end
-    for name,cmd in pairs(BlueKeep["Commands"]) do
+    for name,cmd in pairs(BlueKeep["Cmds"]) do
         addcmd(cmd["CmdList"], cmd["Description"], name)
     end
     UIGridLayout.Parent = ForCmds
@@ -280,10 +280,10 @@ BlueKeep["Uis"]["CmdList"] = function()
     coroutine.wrap(GUIKCM_fake_script)()
 end
 
-BlueKeep["Functions"]["Notify"] = function(Title:string, Message:string, Time:number)
+BlueKeep["Funcs"]["Notify"] = function(Title:string, Message:string, Time:number)
 task.spawn(function()
     repeat task.wait() until not core:FindFirstChild("Notification!") -- dont play multiple at once
-    BlueKeep["Functions"]["PlayAudio"](124951621656853)
+    BlueKeep["Funcs"]["PlayAudio"](124951621656853)
     local ScreenGui = Instance.new("ScreenGui")
     local NotifGUI = Instance.new("Frame")
     local UICorner = Instance.new("UICorner")
@@ -348,7 +348,7 @@ task.spawn(function()
 end)
 end
 
-BlueKeep["Functions"]["GetPlayer"] = function(partName: string) -- returns list of target(s)
+BlueKeep["Funcs"]["GetPlayer"] = function(partName: string) -- returns list of target(s)
     partName = partName:lower()
     local plrs = players:GetPlayers()
     local returntable = {}
@@ -369,20 +369,20 @@ BlueKeep["Functions"]["GetPlayer"] = function(partName: string) -- returns list 
     return {nil}
 end
 
-BlueKeep["Functions"]["Character"] = function(plr: Player) -- returns character of entered player, if no player entered it returns lp character
+BlueKeep["Funcs"]["Character"] = function(plr: Player) -- returns character of entered player, if no player entered it returns lp character
     plr = plr or lp
     return plr.Character or plr.CharacterAdded:Wait()
 end
 
-BlueKeep["Functions"]["StopLoop"] = function(loop: string)
+BlueKeep["Funcs"]["StopLoop"] = function(loop: string)
     if BlueKeep["Loops"][loop] then
         BlueKeep["Loops"][loop]:Disconnect()
         table.remove(BlueKeep["Loops"], BlueKeep["Loops"][loop])
     end
 end
 
-BlueKeep["Functions"]["No Vel"] = function()
-    for _, part in pairs(BlueKeep["Functions"]["Character"]():GetDescendants()) do
+BlueKeep["Funcs"]["No Vel"] = function()
+    for _, part in pairs(BlueKeep["Funcs"]["Character"]():GetDescendants()) do
         pcall(function() 
             part.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
             part.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
@@ -390,8 +390,8 @@ BlueKeep["Functions"]["No Vel"] = function()
     end
 end
 
-BlueKeep["Functions"]["SetCollison"] = function(val:boolean)
-   local char = BlueKeep["Functions"]["Character"]()
+BlueKeep["Funcs"]["SetCollison"] = function(val:boolean)
+   local char = BlueKeep["Funcs"]["Character"]()
    for _,v in pairs(char:GetDescendants()) do
         pcall(function()
             v.CanCollide = val
@@ -418,93 +418,93 @@ for _, file in pairs(listfiles("BlueKeep/Plugins")) do
 end
 
 -- Commands --
-BlueKeep["Functions"]["NewCommand"]("Goto", "Goto (Plr)", "Teleports to (Plr)", true, function(target)
-    local targets = BlueKeep["Functions"]["GetPlayer"](target)
+BlueKeep["Funcs"]["NewCommand"]("Goto", "Goto (Plr)", "Teleports to (Plr)", true, function(target)
+    local targets = BlueKeep["Funcs"]["GetPlayer"](target)
     for _,v in pairs(targets) do
-        BlueKeep["Functions"]["No Vel"]()
-        BlueKeep["Functions"]["Character"]():PivotTo(BlueKeep["Functions"]["Character"](v):GetPivot())
+        BlueKeep["Funcs"]["No Vel"]()
+        BlueKeep["Funcs"]["Character"]():PivotTo(BlueKeep["Funcs"]["Character"](v):GetPivot())
     end
 end)
 
-BlueKeep["Functions"]["NewCommand"]("cmds", "cmds", "Open cmd list", true, function()
+BlueKeep["Funcs"]["NewCommand"]("cmds", "cmds", "Open cmd list", true, function()
     BlueKeep["Uis"]["CmdList"]()
 end)
 
-BlueKeep["Functions"]["NewCommand"]("re", "re", "respawn at current pos", true, function()
-    local char = BlueKeep["Functions"]["Character"]()
+BlueKeep["Funcs"]["NewCommand"]("re", "re", "respawn at current pos", true, function()
+    local char = BlueKeep["Funcs"]["Character"]()
     local ogpos = char:GetPivot()
     if replicatesignal then
-        BlueKeep["Functions"]["Notify"]("Respawning", `Respawning in {players.RespawnTime}`, players.RespawnTime)
+        BlueKeep["Funcs"]["Notify"]("Respawning", `Respawning in {players.RespawnTime}`, players.RespawnTime)
         replicatesignal(lp.ConnectDiedSignalBackend)
         task.wait(players.RespawnTime - 0.1)
         ogpos = char:GetPivot()
         replicatesignal(lp.Kill)
         lp.CharacterAdded:Wait():WaitForChild("Humanoid")
-        BlueKeep["Functions"]["Character"]():PivotTo(ogpos)
+        BlueKeep["Funcs"]["Character"]():PivotTo(ogpos)
         return
     end
 	workspace.FallenPartsDestroyHeight = 0/0
-	char:PivotTo(CFrame.new(5235, BlueKeep["Variables"]["VoidHeight"] - 100, 5235))
+	char:PivotTo(CFrame.new(5235, BlueKeep["Vars"]["VoidHeight"] - 100, 5235))
 	task.wait(.1)
-	workspace.FallenPartsDestroyHeight = BlueKeep["Variables"]["VoidHeight"]
+	workspace.FallenPartsDestroyHeight = BlueKeep["Vars"]["VoidHeight"]
     char:BreakJoints()
     lp.CharacterAdded:Wait():WaitForChild("Humanoid")
-    BlueKeep["Functions"]["Character"]():PivotTo(ogpos)
+    BlueKeep["Funcs"]["Character"]():PivotTo(ogpos)
 end)
 
-BlueKeep["Functions"]["NewCommand"]("sit", "sit", "sits down", true, function()
-    BlueKeep["Functions"]["Character"]():WaitForChild("Humanoid").Sit = true
+BlueKeep["Funcs"]["NewCommand"]("sit", "sit", "sits down", true, function()
+    BlueKeep["Funcs"]["Character"]():WaitForChild("Humanoid").Sit = true
 end)
 
-BlueKeep["Functions"]["NewCommand"]("loopgoto", "loopgoto (plr)", "loop tp to target", true, function(target)
-    BlueKeep["Functions"]["StopLoop"]("Loopgoto")
-    target = BlueKeep["Functions"]["GetPlayer"](target)[1]
+BlueKeep["Funcs"]["NewCommand"]("loopgoto", "loopgoto (plr)", "loop tp to target", true, function(target)
+    BlueKeep["Funcs"]["StopLoop"]("Loopgoto")
+    target = BlueKeep["Funcs"]["GetPlayer"](target)[1]
     BlueKeep["Loops"]["Loopgoto"] = rs.Heartbeat:Connect(function()
-        BlueKeep["Functions"]["No Vel"]()
-        BlueKeep["Functions"]["Character"]():PivotTo(BlueKeep["Functions"]["Character"](target):GetPivot())
+        BlueKeep["Funcs"]["No Vel"]()
+        BlueKeep["Funcs"]["Character"]():PivotTo(BlueKeep["Funcs"]["Character"](target):GetPivot())
     end)
 end)
 
-BlueKeep["Functions"]["NewCommand"]("unloopgoto", "unloopgoto", "disables loopgoto", true, function()
-    BlueKeep["Functions"]["StopLoop"]("Loopgoto")
+BlueKeep["Funcs"]["NewCommand"]("unloopgoto", "unloopgoto", "disables loopgoto", true, function()
+    BlueKeep["Funcs"]["StopLoop"]("Loopgoto")
 end)
 
-BlueKeep["Functions"]["NewCommand"]("noclip", "noclip", "walk through walls", true, function()
-    BlueKeep["Functions"]["StopLoop"]("Noclip")
+BlueKeep["Funcs"]["NewCommand"]("noclip", "noclip", "walk through walls", true, function()
+    BlueKeep["Funcs"]["StopLoop"]("Noclip")
     BlueKeep["Loops"]["Noclip"] = rs.Heartbeat:Connect(function()
-        BlueKeep["Functions"]["SetCollison"](false)
+        BlueKeep["Funcs"]["SetCollison"](false)
     end)
 end)
 
-BlueKeep["Functions"]["NewCommand"]("clip", "clip", "disables noclip", true, function()
-    BlueKeep["Functions"]["StopLoop"]("Noclip")
-    BlueKeep["Functions"]["SetCollison"](true)
+BlueKeep["Funcs"]["NewCommand"]("clip", "clip", "disables noclip", true, function()
+    BlueKeep["Funcs"]["StopLoop"]("Noclip")
+    BlueKeep["Funcs"]["SetCollison"](true)
 end)
 
-BlueKeep["Functions"]["NewCommand"](
+BlueKeep["Funcs"]["NewCommand"](
 	"freecam",
 	"freecam (speed)",
 	"Toggle freecam (camera noclip)",
 	true,
 	function(speed)
 
-		local cam = BlueKeep["Functions"]["Camera"]()
+		local cam = BlueKeep["Funcs"]["Camera"]()
 		speed = speed or 1.4
 		local sensitivity = 0.0025
 
-		if BlueKeep["Variables"]["FreecamEnabled"] then
+		if BlueKeep["Vars"]["FreecamEnabled"] then
 			
-			BlueKeep["Variables"]["FreecamEnabled"] = false
+			BlueKeep["Vars"]["FreecamEnabled"] = false
 			cam.CameraType = Enum.CameraType.Custom
 			uis.MouseBehavior = Enum.MouseBehavior.Default
-			BlueKeep["Functions"]["Notify"]("Freecam", "Disabled", 2)
-            BlueKeep["Functions"]["Character"]().HumanoidRootPart.Anchored = false
+			BlueKeep["Funcs"]["Notify"]("Freecam", "Disabled", 2)
+            BlueKeep["Funcs"]["Character"]().HumanoidRootPart.Anchored = false
 			return
 		end
 
 	
-		BlueKeep["Variables"]["FreecamEnabled"] = true
-        BlueKeep["Functions"]["Character"]().HumanoidRootPart.Anchored = true
+		BlueKeep["Vars"]["FreecamEnabled"] = true
+        BlueKeep["Funcs"]["Character"]().HumanoidRootPart.Anchored = true
 		cam.CameraType = Enum.CameraType.Scriptable
 		uis.MouseBehavior = Enum.MouseBehavior.LockCenter
 
@@ -514,7 +514,7 @@ BlueKeep["Functions"]["NewCommand"](
 		local moveConn, lookConn
 
 		moveConn = rs.RenderStepped:Connect(function()
-			if not BlueKeep["Variables"]["FreecamEnabled"] then
+			if not BlueKeep["Vars"]["FreecamEnabled"] then
 				moveConn:Disconnect()
 				if lookConn then lookConn:Disconnect() end
 				return
@@ -538,7 +538,7 @@ BlueKeep["Functions"]["NewCommand"](
 		end)
 
 		lookConn = uis.InputChanged:Connect(function(input, gpe)
-			if gpe or not BlueKeep["Variables"]["FreecamEnabled"] then return end
+			if gpe or not BlueKeep["Vars"]["FreecamEnabled"] then return end
 
 			if input.UserInputType == Enum.UserInputType.MouseMovement then
 				rx -= input.Delta.Y * sensitivity
@@ -551,47 +551,47 @@ BlueKeep["Functions"]["NewCommand"](
 			end
 		end)
 
-		BlueKeep["Functions"]["Notify"]("Freecam", "Enabled", 2)
+		BlueKeep["Funcs"]["Notify"]("Freecam", "Enabled", 2)
 	end
 )
 
-BlueKeep["Functions"]["NewCommand"]("view", "view (plr)", "Views player", true, function(target)
-    BlueKeep["Functions"]["StopLoop"]("Viewing")
-    target = BlueKeep["Functions"]["GetPlayer"](target)[1]
-	local char = BlueKeep["Functions"]["Character"](target)
+BlueKeep["Funcs"]["NewCommand"]("view", "view (plr)", "Views player", true, function(target)
+    BlueKeep["Funcs"]["StopLoop"]("Viewing")
+    target = BlueKeep["Funcs"]["GetPlayer"](target)[1]
+	local char = BlueKeep["Funcs"]["Character"](target)
 
 	if char and char:FindFirstChild("Humanoid") then
-		BlueKeep["Functions"]["Notify"]("Viewing", target.Name, 10)
-		BlueKeep["Functions"]["Camera"]().CameraSubject = target.Character:WaitForChild("Humanoid")
+		BlueKeep["Funcs"]["Notify"]("Viewing", target.Name, 10)
+		BlueKeep["Funcs"]["Camera"]().CameraSubject = target.Character:WaitForChild("Humanoid")
 		BlueKeep["Loops"]["viewing"] = target.CharacterAdded:Connect(function()
 			local hum = target.Character:WaitForChild("Humanoid")
-			BlueKeep["Functions"]["Camera"]().CameraSubject = hum
+			BlueKeep["Funcs"]["Camera"]().CameraSubject = hum
 		end)
 	else
-		BlueKeep["Functions"]["Notify"]("View", "Failed To Find Character Or Humanoid", 5)
+		BlueKeep["Funcs"]["Notify"]("View", "Failed To Find Character Or Humanoid", 5)
 	end
 end)
 
-BlueKeep["Functions"]["NewCommand"]("unview", "unview", "Unviews player", true, function()
-    BlueKeep["Functions"]["StopLoop"]("Viewing")
-    BlueKeep["Functions"]["Camera"]().CameraSubject = BlueKeep["Functions"]["Character"]():WaitForChild("Humanoid")
+BlueKeep["Funcs"]["NewCommand"]("unview", "unview", "Unviews player", true, function()
+    BlueKeep["Funcs"]["StopLoop"]("Viewing")
+    BlueKeep["Funcs"]["Camera"]().CameraSubject = BlueKeep["Funcs"]["Character"]():WaitForChild("Humanoid")
 end)
 
-BlueKeep["Functions"]["NewCommand"]("novoid", "novoid", "removes the void", true, function()
+BlueKeep["Funcs"]["NewCommand"]("novoid", "novoid", "removes the void", true, function()
     workspace.FallenPartsDestroyHeight = 0/0
 end)
 
-BlueKeep["Functions"]["NewCommand"]("unnovoid", "unnovoid", "brings void back", true, function()
-    workspace.FallenPartsDestroyHeight = BlueKeep["Variables"]["VoidHeight"]
+BlueKeep["Funcs"]["NewCommand"]("unnovoid", "unnovoid", "brings void back", true, function()
+    workspace.FallenPartsDestroyHeight = BlueKeep["Vars"]["VoidHeight"]
 end)
 
-BlueKeep["Functions"]["NewCommand"]("voidcf", "voidcf", "voids people loopgoto'ing or banging you.", true, function()
-    local orgpos = BlueKeep["Functions"]["Character"]():GetPivot()
+BlueKeep["Funcs"]["NewCommand"]("voidcf", "voidcf", "voids people loopgoto'ing or banging you.", true, function()
+    local orgpos = BlueKeep["Funcs"]["Character"]():GetPivot()
     workspace.FallenPartsDestroyHeight = 0/0
-    BlueKeep["Functions"]["Character"]():PivotTo(CFrame.new(0, BlueKeep["Variables"]["VoidHeight"], 0))
+    BlueKeep["Funcs"]["Character"]():PivotTo(CFrame.new(0, BlueKeep["Vars"]["VoidHeight"], 0))
     task.wait(2)
-    BlueKeep["Functions"]["Character"]():PivotTo(orgpos)
-    workspace.FallenPartsDestroyHeight = BlueKeep["Variables"]["VoidHeight"]
+    BlueKeep["Funcs"]["Character"]():PivotTo(orgpos)
+    workspace.FallenPartsDestroyHeight = BlueKeep["Vars"]["VoidHeight"]
 end)
 
 -- Command bar --
@@ -654,7 +654,7 @@ TextBox.TextSize = 14.000
 TextBox.TextWrapped = true
 
 BlueKeep['Loops']['cmdbar_Toggle'] = uis.InputBegan:Connect(function(input, chting)
-	if input.KeyCode.Name == BlueKeep["KeyBinds"]["CmdBar"] and not chting then
+	if input.KeyCode.Name == BlueKeep["Binds"]["CmdBar"] and not chting then
         task.wait()
 		TextBox:CaptureFocus()
 	end
@@ -668,9 +668,11 @@ TextBox.FocusLost:Connect(function(ep)
 	TextBox.Text = ""
 	table.remove(args,1)
 
-    BlueKeep["Functions"]["RunCommand"](cmd, args)
+    BlueKeep["Funcs"]["RunCommand"](cmd, args)
 end)
 -- Done Setting Up! --
+
+getgenv().BK = BlueKeep -- shorter name for developers/plugin makers
 
 local function getlen(t:{any}) -- #table does not work on bad executors..
     local h = 0
@@ -680,4 +682,4 @@ local function getlen(t:{any}) -- #table does not work on bad executors..
     return h 
 end
 
-BlueKeep["Functions"]["Notify"]("BlueKeep", `Loaded<3\n {getlen(BlueKeep["Commands"])} commands loaded.`, 10)
+BlueKeep["Funcs"]["Notify"]("BlueKeep", `Loaded<3\n {getlen(BlueKeep["Cmds"])} commands loaded.`, 10)
