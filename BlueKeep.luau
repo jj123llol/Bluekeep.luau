@@ -264,7 +264,7 @@ BlueKeep["Functions"]["Notify"] = function(Title:string, Message:string, Time:nu
 task.spawn(function()
     repeat task.wait() until not core:FindFirstChild("Notification!") -- dont play multiple at once
     local sound = Instance.new("Sound")
-    sound.SoundId = "rbxassetid://7383525713"
+    sound.SoundId = "rbxassetid://124951621656853"
     sound.Parent = BlueKeep["Functions"]["Service"]("SoundService")
     sound:Play()
     local ScreenGui = Instance.new("ScreenGui")
