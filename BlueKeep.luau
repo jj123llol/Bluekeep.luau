@@ -23,6 +23,7 @@ getgenv().BlueKeep = {
     ["Uis"] = {},
     ["Binds"] = {},
     ["Vars"] = {},
+    ["NotiQ"] = {}
 }
 BlueKeep["Binds"]["CmdBar"] = "Minus"
 BlueKeep["Vars"]["VoidHeight"] = workspace.FallenPartsDestroyHeight
@@ -63,6 +64,81 @@ local ts = BlueKeep["GetService"]("TweenService")
 local core = BlueKeep["GetService"]("CoreGui")
 local rs = BlueKeep["GetService"]("RunService")
 local uis = BlueKeep["GetService"]("UserInputService")
+
+local function noti(text, bottom, time) -- please use BlueKeep["Functions"]["Notify"] instead of this!
+    BlueKeep["Funcs"]["PlayAudio"](124951621656853)
+    local ScreenGui = Instance.new("ScreenGui")
+    local NotifGUI = Instance.new("Frame")
+    local UICorner = Instance.new("UICorner")
+    local NotifText = Instance.new("TextLabel")
+    local UICorner_2 = Instance.new("UICorner")
+    local NotifBottomText = Instance.new("TextLabel")
+    ScreenGui.Name = "Notification!"
+    ScreenGui.Parent = core
+    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    ScreenGui.ResetOnSpawn = false
+    NotifGUI.Name = "NotifGUI"
+    NotifGUI.AnchorPoint = Vector2.new(1, 1)
+    NotifGUI.Parent = ScreenGui
+    NotifGUI.BackgroundColor3 = Color3.fromRGB(0, 0, 121)
+    NotifGUI.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    NotifGUI.BorderSizePixel = 0
+    NotifGUI.Position = UDim2.new(0.835877836, 0, 0.806425035, 0)
+    NotifGUI.Size = UDim2.new(0, 298, 0, 198)
+    UICorner.Parent = NotifGUI
+    NotifText.Name = "NotifText"
+    NotifText.Parent = NotifGUI
+    NotifText.BackgroundColor3 = Color3.fromRGB(0, 0, 176)
+    NotifText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    NotifText.BorderSizePixel = 0
+    NotifText.Size = UDim2.new(0, 298, 0, 66)
+    NotifText.Font = Enum.Font.SourceSans
+    NotifText.TextColor3 = Color3.fromRGB(81, 81, 81)
+    NotifText.TextScaled = true
+    NotifText.TextSize = 14.000
+    NotifText.TextWrapped = true
+    NotifText.Text = text
+    NotifText.TextYAlignment = Enum.TextYAlignment.Top
+    UICorner_2.Parent = NotifText
+    NotifBottomText.Name = "NotifBottomText"
+    NotifBottomText.Parent = NotifGUI
+    NotifBottomText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    NotifBottomText.BackgroundTransparency = 1.000
+    NotifBottomText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    NotifBottomText.BorderSizePixel = 0
+    NotifBottomText.Position = UDim2.new(0, 0, 0.333333343, 0)
+    NotifBottomText.Size = UDim2.new(0, 298, 0, 122)
+    NotifBottomText.Font = Enum.Font.SourceSans
+    NotifBottomText.TextColor3 = Color3.fromRGB(115, 115, 115)
+    NotifBottomText.TextScaled = true
+    NotifBottomText.TextSize = 14.000
+    NotifBottomText.TextWrapped = true
+    NotifBottomText.Text = bottom
+	local function Script_1()
+		local script = Instance.new('Script', NotifGUI)
+		local tweenInfo = TweenInfo.new(2, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+		local tween = ts:Create(script.Parent, tweenInfo, {Position = UDim2.new(0.992, 0,0.983, 0)})
+		tween:Play()
+        tween.Completed:Wait()
+		task.wait(time)
+		tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+		tween = ts:Create(script.Parent, tweenInfo, {Position = UDim2.new(1.5, 0, 0.95, 0)})
+		tween:Play()
+		tween.Completed:Wait()
+		ScreenGui:Destroy()
+	end
+	coroutine.wrap(Script_1)()
+end
+
+-- loop for noti q --
+BlueKeep["Vars"]["Noticooldown"] = tick()
+BlueKeep["Loops"]["NotiQ"] = rs.RenderStepped:Connect(function()
+    if (#BlueKeep["NotiQ"] > 0) and (tick() - BlueKeep["Vars"]["Noticooldown"] > .3) and not core:FindFirstChild("Notification!") then
+        BlueKeep["Vars"]["Noticooldown"] = tick()
+        local data = BlueKeep["NotiQ"][1]
+        noti(data["Title"], data["Message"], data["Time"])
+    end
+end)
 
 BlueKeep["Funcs"]["PlayAudio"] = function(id:string, looped:boolean)
 task.spawn(function()
@@ -283,69 +359,11 @@ end
 
 BlueKeep["Funcs"]["Notify"] = function(Title:string, Message:string, Time:number)
 task.spawn(function()
-    repeat task.wait() until not core:FindFirstChild("Notification!") -- dont play multiple at once
-    BlueKeep["Funcs"]["PlayAudio"](124951621656853)
-    local ScreenGui = Instance.new("ScreenGui")
-    local NotifGUI = Instance.new("Frame")
-    local UICorner = Instance.new("UICorner")
-    local NotifText = Instance.new("TextLabel")
-    local UICorner_2 = Instance.new("UICorner")
-    local NotifBottomText = Instance.new("TextLabel")
-    ScreenGui.Name = "Notification!"
-    ScreenGui.Parent = core
-    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    ScreenGui.ResetOnSpawn = false
-    NotifGUI.Name = "NotifGUI"
-    NotifGUI.AnchorPoint = Vector2.new(1, 1)
-    NotifGUI.Parent = ScreenGui
-    NotifGUI.BackgroundColor3 = Color3.fromRGB(0, 0, 121)
-    NotifGUI.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    NotifGUI.BorderSizePixel = 0
-    NotifGUI.Position = UDim2.new(0.835877836, 0, 0.806425035, 0)
-    NotifGUI.Size = UDim2.new(0, 298, 0, 198)
-    UICorner.Parent = NotifGUI
-    NotifText.Name = "NotifText"
-    NotifText.Parent = NotifGUI
-    NotifText.BackgroundColor3 = Color3.fromRGB(0, 0, 176)
-    NotifText.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    NotifText.BorderSizePixel = 0
-    NotifText.Size = UDim2.new(0, 298, 0, 66)
-    NotifText.Font = Enum.Font.SourceSans
-    NotifText.TextColor3 = Color3.fromRGB(81, 81, 81)
-    NotifText.TextScaled = true
-    NotifText.TextSize = 14.000
-    NotifText.TextWrapped = true
-    NotifText.Text = Title
-    NotifText.TextYAlignment = Enum.TextYAlignment.Top
-    UICorner_2.Parent = NotifText
-    NotifBottomText.Name = "NotifBottomText"
-    NotifBottomText.Parent = NotifGUI
-    NotifBottomText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    NotifBottomText.BackgroundTransparency = 1.000
-    NotifBottomText.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    NotifBottomText.BorderSizePixel = 0
-    NotifBottomText.Position = UDim2.new(0, 0, 0.333333343, 0)
-    NotifBottomText.Size = UDim2.new(0, 298, 0, 122)
-    NotifBottomText.Font = Enum.Font.SourceSans
-    NotifBottomText.TextColor3 = Color3.fromRGB(115, 115, 115)
-    NotifBottomText.TextScaled = true
-    NotifBottomText.TextSize = 14.000
-    NotifBottomText.TextWrapped = true
-    NotifBottomText.Text = Message
-	local function Script_1()
-		local script = Instance.new('Script', NotifGUI)
-		local tweenInfo = TweenInfo.new(2, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-		local tween = ts:Create(script.Parent, tweenInfo, {Position = UDim2.new(0.992, 0,0.983, 0)})
-		tween:Play()
-        tween.Completed:Wait()
-		task.wait(Time)
-		tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-		tween = ts:Create(script.Parent, tweenInfo, {Position = UDim2.new(1.5, 0, 0.95, 0)})
-		tween:Play()
-		tween.Completed:Wait()
-		ScreenGui:Destroy()
-	end
-	coroutine.wrap(Script_1)()
+    table.insert(BlueKeep["NotiQ"], {
+        ["Title"] = Title,
+        ["Message"] = Message,
+        ["Time"] = Time
+    })
 end)
 end
 
