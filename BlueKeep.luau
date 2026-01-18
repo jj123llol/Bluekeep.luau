@@ -169,6 +169,55 @@ BlueKeep["Uis"]["CmdList"] = function()
     UIGridLayout.Parent = ForCmds
     UIGridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
     UIGridLayout.CellSize = UDim2.new(0, 250, 0, 80)
+
+    local function GUIKCM_fake_script() -- CmdList.Dragify 
+	    local script = Instance.new('LocalScript', CmdList)
+	    local UserInputService = uis
+	    local dragToggle
+	    local dragInput
+	    local dragSpeed
+	    local dragStart
+	    local dragPos
+	    local startPos
+	
+	    function dragify(Frame)
+	        dragToggle = nil
+	        dragSpeed = 0.50
+	        dragInput = nil
+	        dragStart = nil
+	        dragPos = nil
+	        local function updateInput(input)
+	            local Delta = input.Position - dragStart
+	            local Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + Delta.X, startPos.Y.Scale, startPos.Y.Offset + Delta.Y)
+	            ts:Create(Frame, TweenInfo.new(0.30), {Position = Position}):Play()
+	    end
+	        Frame.InputBegan:Connect(function(input)
+	            if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and UserInputService:GetFocusedTextBox() == nil then
+	                dragToggle = true
+	                dragStart = input.Position
+	                startPos = Frame.Position
+	                input.Changed:Connect(function()
+	                    if input.UserInputState == Enum.UserInputState.End then
+	                        dragToggle = false
+	                    end
+	                end)
+	            end
+	        end)
+	        Frame.InputChanged:Connect(function(input)
+	            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+	                dragInput = input
+	            end
+	        end)
+	        uis.InputChanged:Connect(function(input)
+	            if input == dragInput and dragToggle then
+	                updateInput(input)
+	            end
+	        end)
+	    end
+	
+	    dragify(script.Parent)
+    end
+    coroutine.wrap(GUIKCM_fake_script)()
 end
 
 BlueKeep["Functions"]["Notify"] = function(Title:string, Message:string, Time:number)
