@@ -136,6 +136,7 @@ BlueKeep["Loops"]["NotiQ"] = rs.RenderStepped:Connect(function()
     if (#BlueKeep["NotiQ"] > 0) and (tick() - BlueKeep["Vars"]["Noticooldown"] > .3) and not core:FindFirstChild("Notification!") then
         BlueKeep["Vars"]["Noticooldown"] = tick()
         local data = BlueKeep["NotiQ"][1]
+        table.remove(BlueKeep["NotiQ"], 1)
         noti(data["Title"], data["Message"], data["Time"])
     end
 end)
