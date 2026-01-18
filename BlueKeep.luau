@@ -8,6 +8,8 @@
 ]]
 
 type callback = () -> ()
+getgenv = getgenv -- because visual studio code errors pmo
+BlueKeep = BlueKeep or nil -- visual studio code errors pmo
 if BlueKeep then return error("Bluekeep.luau is already running!") end
 
 
@@ -63,6 +65,7 @@ local rs = BlueKeep["Functions"]["Service"]("RunService")
 local uis = BlueKeep["Functions"]["Service"]("UserInputService")
 
 BlueKeep["Functions"]["PlayAudio"] = function(id:string, looped:boolean)
+task.spawn(function()
     local sound = Instance.new("Sound")
     sound.SoundId = `rbxassetid://{tostring(id or 1)}`
     sound.Parent = BlueKeep["Functions"]["Service"]("SoundService")
@@ -74,6 +77,7 @@ BlueKeep["Functions"]["PlayAudio"] = function(id:string, looped:boolean)
         return
     end
     return sound
+end)
 end
 
 BlueKeep["Uis"]["CmdList"] = function()
