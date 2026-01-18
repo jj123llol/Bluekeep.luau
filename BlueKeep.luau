@@ -501,7 +501,7 @@ BlueKeep["Funcs"]["NewCommand"](
 	true,
 	function(speed)
 
-		local cam = BlueKeep["Vars"]["Camera"]()
+		local cam = BlueKeep["Funcs"]["Camera"]()
 		speed = speed or 1.4
 		local sensitivity = 0.0025
 
@@ -575,10 +575,10 @@ BlueKeep["Funcs"]["NewCommand"]("view", "view (plr)", "Views player", true, func
 
 	if char and char:FindFirstChild("Humanoid") then
 		BlueKeep["Funcs"]["Notify"]("Viewing", target.Name, 10)
-		BlueKeep["Vars"]["Camera"]().CameraSubject = target.Character:WaitForChild("Humanoid")
+		BlueKeep["Funcs"]["Camera"]().CameraSubject = target.Character:WaitForChild("Humanoid")
 		BlueKeep["Loops"]["viewing"] = target.CharacterAdded:Connect(function()
 			local hum = target.Character:WaitForChild("Humanoid")
-			BlueKeep["Vars"]["Camera"]().CameraSubject = hum
+			BlueKeep["Funcs"]["Camera"]().CameraSubject = hum
 		end)
 	else
 		BlueKeep["Funcs"]["Notify"]("View", "Failed To Find Character Or Humanoid", 5)
@@ -587,7 +587,7 @@ end)
 
 BlueKeep["Funcs"]["NewCommand"]("unview", "unview", "Unviews player", true, function()
     BlueKeep["Funcs"]["StopLoop"]("Viewing")
-    BlueKeep["Vars"]["Camera"]().CameraSubject = BlueKeep["Funcs"]["Character"]():WaitForChild("Humanoid")
+    BlueKeep["Funcs"]["Camera"]().CameraSubject = BlueKeep["Funcs"]["Character"]():WaitForChild("Humanoid")
 end)
 
 BlueKeep["Funcs"]["NewCommand"]("novoid", "novoid", "removes the void", true, function()
