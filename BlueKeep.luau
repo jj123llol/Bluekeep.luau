@@ -62,13 +62,18 @@ local core = BlueKeep["Functions"]["Service"]("CoreGui")
 local rs = BlueKeep["Functions"]["Service"]("RunService")
 local uis = BlueKeep["Functions"]["Service"]("UserInputService")
 
-BlueKeep["Functions"]["PlayAudio"] = function(id:string)
+BlueKeep["Functions"]["PlayAudio"] = function(id:string, looped:boolean)
     local sound = Instance.new("Sound")
-    sound.SoundId = `rbxassetid://{tostring(id)}`
+    sound.SoundId = `rbxassetid://{tostring(id or 1)}`
     sound.Parent = BlueKeep["Functions"]["Service"]("SoundService")
+    sound.Looped = looped or false
     sound:Play()
-    sound.Ended:Wait()
-    sound:Destroy()
+    if not looped then
+        sound.Ended:Wait()
+        sound:Destroy()
+        return
+    end
+    return sound
 end
 
 BlueKeep["Uis"]["CmdList"] = function()
