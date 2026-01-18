@@ -322,7 +322,7 @@ BlueKeep["Functions"]["NewCommand"]("Goto", "Goto (Plr)", "Teleports to (Plr)", 
 end)
 
 BlueKeep["Functions"]["NewCommand"]("cmds", "cmds", "Open cmd list", true, function()
-    BlueKeep["Uis"]["CmdBarUi"]()
+    BlueKeep["Uis"]["CmdList"]()
 end)
 
 BlueKeep["Functions"]["NewCommand"]("re", "re", "respawn at current pos", true, function()
