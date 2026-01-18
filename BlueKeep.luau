@@ -436,6 +436,7 @@ BlueKeep["Functions"]["NewCommand"]("re", "re", "respawn at current pos", true, 
         BlueKeep["Functions"]["Notify"]("Respawning", `Respawning in {players.RespawnTime}`, players.RespawnTime)
         replicatesignal(lp.ConnectDiedSignalBackend)
         task.wait(players.RespawnTime - 0.1)
+        ogpos = char:GetPivot()
         replicatesignal(lp.Kill)
         lp.CharacterAdded:Wait():WaitForChild("Humanoid")
         BlueKeep["Functions"]["Character"]():PivotTo(ogpos)
