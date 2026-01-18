@@ -199,7 +199,7 @@ BlueKeep["Uis"]["CmdList"] = function()
 
         Command.MouseLeave:Connect(function(x, y)
             hover_Text.Text = ""
-            hover_Text.Transparency = 1
+            hover_Text.BackgroundTransparency = 1
             hover_Text.Position = UDim2.new(x, 0, y, 0)
         end)
 
