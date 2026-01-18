@@ -185,8 +185,8 @@ BlueKeep["Uis"]["CmdList"] = function()
     ForCmds.BorderSizePixel = 0
     ForCmds.Position = UDim2.new(0, 0, 0.121999756, 0)
     ForCmds.Size = UDim2.new(0, 292, 0, 439)
-    ForCmds.AutomaticSize = Enum.AutomaticSize.Y
-    --ForCmds.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    --ForCmds.AutomaticSize = Enum.AutomaticSize.Y
+    ForCmds.AutomaticCanvasSize = Enum.AutomaticSize.Y
 
     local function addcmd(Text:string, Description:string)
         local Command = Instance.new("TextLabel")
