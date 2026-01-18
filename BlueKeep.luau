@@ -64,6 +64,23 @@ local uis = BlueKeep["Functions"]["Service"]("UserInputService")
 
 BlueKeep["Uis"]["CmdList"] = function()
     local ScreenGui = Instance.new("ScreenGui")
+    local hover_Text = Instance.new("TextLabel")
+    local UICorner_4 = Instance.new("UICorner")
+    hover_Text.Name = "hoverthing"
+    hover_Text.Parent = ScreenGui
+    hover_Text.BackgroundColor3 = Color3.fromRGB(0, 0, 176)
+    hover_Text.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    hover_Text.BorderSizePixel = 0
+    hover_Text.Size = UDim2.new(0, 298, 0, 66)
+    hover_Text.Font = Enum.Font.SourceSans
+    hover_Text.TextColor3 = Color3.fromRGB(81, 81, 81)
+    hover_Text.TextScaled = true
+    hover_Text.TextSize = 14.000
+    hover_Text.TextWrapped = true
+    hover_Text.Text = ""
+    hover_Text.TextYAlignment = Enum.TextYAlignment.Top
+    hover_Text.Transparency = 1
+    UICorner_4.Parent = hover_Text
     local CmdList = Instance.new("Frame")
     local UICorner = Instance.new("UICorner")
     local TitleHolder = Instance.new("Frame")
@@ -165,6 +182,27 @@ BlueKeep["Uis"]["CmdList"] = function()
         Command.TextSize = 37.000
         Command.TextWrapped = true
         UICorner_3.Parent = Command
+
+        Command.MouseEnter:Connect(function(x, y)
+			local mouse = lp:GetMouse()
+			hover_Text.BackgroundTransparency = 0
+			hover_Text.Text = Description
+			hover_Text.Position = UDim2.new((x/mouse.ViewSizeX) + .000050, 0, (y/mouse.ViewSizeY), 0)
+        end)
+        
+        Command.MouseMoved:Connect(function()
+			local mouse = lp:GetMouse()
+			hover_Text.BackgroundTransparency = 0
+			hover_Text.Text = Description
+			hover_Text.Position = UDim2.new((mouse.x/mouse.ViewSizeX) + .000050, 0, (mouse.y/mouse.ViewSizeY), 0)
+        end)
+
+        Command.MouseLeave:Connect(function(x, y)
+            hover_Text.Text = ""
+            hover_Text.Transparency = 1
+            hover_Text.Position = UDim2.new(x, 0, y, 0)
+        end)
+
     end
     for _,cmd in pairs(BlueKeep["Commands"]) do
         addcmd(cmd["CmdList"], cmd["Description"])
