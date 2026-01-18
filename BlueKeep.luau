@@ -170,12 +170,17 @@ end
 
 BlueKeep["Functions"]["Notify"] = function(Title:string, Message:string, Time:number)
 task.spawn(function()
+    repeat task.wait() until not core:FindFirstChild("Notification") -- dont play multiple at once
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://7383525713"
+    sound.Parent = BlueKeep["Functions"]["Service"]("SoundService")
     local ScreenGui = Instance.new("ScreenGui")
     local NotifGUI = Instance.new("Frame")
     local UICorner = Instance.new("UICorner")
     local NotifText = Instance.new("TextLabel")
     local UICorner_2 = Instance.new("UICorner")
     local NotifBottomText = Instance.new("TextLabel")
+    ScreenGui.Name = "Notification!"
     ScreenGui.Parent = core
     ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     ScreenGui.ResetOnSpawn = false
@@ -221,14 +226,16 @@ task.spawn(function()
 		local tweenInfo = TweenInfo.new(2, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
 		local tween = ts:Create(script.Parent, tweenInfo, {Position = UDim2.new(0.992, 0,0.983, 0)})
 		tween:Play()
-
+        tween.Completed:Wait()
 		task.wait(Time)
-		tweenInfo = TweenInfo.new(5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+		tweenInfo = TweenInfo.new(15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 		tween = ts:Create(script.Parent, tweenInfo, {Position = UDim2.new(10, 0, 0.95, 0)})
 		tween:Play()
 		tween.Completed:Wait()
 		script.Parent:Destroy()
+        sound:Destroy()
 	end
+    sound:Play()
 	coroutine.wrap(Script_1)()
 end)
 end
