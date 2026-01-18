@@ -27,12 +27,12 @@ getgenv().BlueKeep = {
 BlueKeep["Binds"]["CmdBar"] = "Minus"
 BlueKeep["Vars"]["VoidHeight"] = workspace.FallenPartsDestroyHeight
 -- this way we dont accidently import multiple of the same service..
-BlueKeep["Funcs"]["Service"] = function(Name: string)
+BlueKeep["GetService"] = function(Name: string)
     if BlueKeep["Servs"][Name] then return BlueKeep["Servs"][Name] end
     BlueKeep["Servs"][Name] = cloneref(game:GetService(Name))
     return BlueKeep["Servs"][Name]
 end
-BlueKeep["Funcs"]["Camera"] = function() return game.Workspace.CurrentCamera end
+BlueKeep["Vars"]["Camera"] = function() return game.Workspace.CurrentCamera end
 
 -- adds new commands to BlueKeep.luau
 BlueKeep["Funcs"]["NewCommand"] = function(Name:string, CmdList: string, Description: string, SplitArgs: boolean, func: callback)
@@ -57,18 +57,18 @@ BlueKeep["Funcs"]["RunCommand"] = function(Name: string, args: {any}) -- attempt
     end
     return true
 end
-local players: Players = BlueKeep["Funcs"]["Service"]("Players")
+local players: Players = BlueKeep["GetService"]("Players")
 local lp: Player = players.LocalPlayer  --ts does NOT need a comment
-local ts = BlueKeep["Funcs"]["Service"]("TweenService")
-local core = BlueKeep["Funcs"]["Service"]("CoreGui")
-local rs = BlueKeep["Funcs"]["Service"]("RunService")
-local uis = BlueKeep["Funcs"]["Service"]("UserInputService")
+local ts = BlueKeep["GetService"]("TweenService")
+local core = BlueKeep["GetService"]("CoreGui")
+local rs = BlueKeep["GetService"]("RunService")
+local uis = BlueKeep["GetService"]("UserInputService")
 
 BlueKeep["Funcs"]["PlayAudio"] = function(id:string, looped:boolean)
 task.spawn(function()
     local sound = Instance.new("Sound")
     sound.SoundId = `rbxassetid://{tostring(id or 1)}`
-    sound.Parent = BlueKeep["Funcs"]["Service"]("SoundService")
+    sound.Parent = BlueKeep["GetService"]("SoundService")
     sound.Looped = looped or false
     sound:Play()
     if not looped then
@@ -488,7 +488,7 @@ BlueKeep["Funcs"]["NewCommand"](
 	true,
 	function(speed)
 
-		local cam = BlueKeep["Funcs"]["Camera"]()
+		local cam = BlueKeep["Vars"]["Camera"]()
 		speed = speed or 1.4
 		local sensitivity = 0.0025
 
@@ -562,10 +562,10 @@ BlueKeep["Funcs"]["NewCommand"]("view", "view (plr)", "Views player", true, func
 
 	if char and char:FindFirstChild("Humanoid") then
 		BlueKeep["Funcs"]["Notify"]("Viewing", target.Name, 10)
-		BlueKeep["Funcs"]["Camera"]().CameraSubject = target.Character:WaitForChild("Humanoid")
+		BlueKeep["Vars"]["Camera"]().CameraSubject = target.Character:WaitForChild("Humanoid")
 		BlueKeep["Loops"]["viewing"] = target.CharacterAdded:Connect(function()
 			local hum = target.Character:WaitForChild("Humanoid")
-			BlueKeep["Funcs"]["Camera"]().CameraSubject = hum
+			BlueKeep["Vars"]["Camera"]().CameraSubject = hum
 		end)
 	else
 		BlueKeep["Funcs"]["Notify"]("View", "Failed To Find Character Or Humanoid", 5)
@@ -574,7 +574,7 @@ end)
 
 BlueKeep["Funcs"]["NewCommand"]("unview", "unview", "Unviews player", true, function()
     BlueKeep["Funcs"]["StopLoop"]("Viewing")
-    BlueKeep["Funcs"]["Camera"]().CameraSubject = BlueKeep["Funcs"]["Character"]():WaitForChild("Humanoid")
+    BlueKeep["Vars"]["Camera"]().CameraSubject = BlueKeep["Funcs"]["Character"]():WaitForChild("Humanoid")
 end)
 
 BlueKeep["Funcs"]["NewCommand"]("novoid", "novoid", "removes the void", true, function()
