@@ -32,7 +32,7 @@ BlueKeep["GetService"] = function(Name: string)
     BlueKeep["Servs"][Name] = cloneref(game:GetService(Name))
     return BlueKeep["Servs"][Name]
 end
-BlueKeep["Vars"]["Camera"] = function() return game.Workspace.CurrentCamera end
+BlueKeep["Funcs"]["Camera"] = function() return workspace.CurrentCamera end
 
 -- adds new commands to BlueKeep.luau
 BlueKeep["Funcs"]["NewCommand"] = function(Name:string, CmdList: string, Description: string, SplitArgs: boolean, func: callback)
