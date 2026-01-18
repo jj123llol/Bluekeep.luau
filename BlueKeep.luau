@@ -188,6 +188,7 @@ BlueKeep["Uis"]["CmdList"] = function()
 			local mouse = lp:GetMouse()
 			hover_Text.BackgroundTransparency = 0
 			hover_Text.Text = Description
+            print(`Set to {Description}`)
 			hover_Text.Position = UDim2.new((x/mouse.ViewSizeX) + .000050, 0, (y/mouse.ViewSizeY), 0)
         end)
         
@@ -206,6 +207,7 @@ BlueKeep["Uis"]["CmdList"] = function()
 
     end
     for _,cmd in pairs(BlueKeep["Commands"]) do
+        print(cmd["Description"])
         addcmd(cmd["CmdList"], cmd["Description"])
     end
     UIGridLayout.Parent = ForCmds
