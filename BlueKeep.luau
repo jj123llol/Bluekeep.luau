@@ -626,6 +626,18 @@ BlueKeep["Funcs"]["NewCommand"]("voidcf", "voidcf", "voids people loopgoto'ing o
     workspace.FallenPartsDestroyHeight = BlueKeep["Vars"]["VoidHeight"]
 end)
 
+BlueKeep["Funcs"]["NewCommand"]("hookconsole", "hookconsole", "Stops print/error/warn from going into console and instead notifies you.", true, function()
+    hookfunction("print", function(msg)
+        BlueKeep["Functions"]["Notify"]("print", msg, 5)
+    end)
+    hookfunction("warn", function(msg)
+        BlueKeep["Functions"]["Notify"]("warn", msg, 5)
+    end)
+    hookfunction("error", function(msg)
+        BlueKeep["Functions"]["Notify"]("error", msg, 5)
+    end)
+end)
+
 -- Command bar --
 local ScreenGui = Instance.new("ScreenGui")
 local CmdBar = Instance.new("Frame")
