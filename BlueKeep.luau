@@ -640,13 +640,31 @@ BlueKeep["Funcs"]["NewCommand"]("voidcf", "voidcf", "voids people loopgoto'ing o
 end)
 
 BlueKeep["Funcs"]["NewCommand"]("hookconsole", "hookconsole", "Stops print/error/warn from going into console and instead notifies you.", true, function()
-    hookfunction(print, function(msg)
+    hookfunction(print, function(...)
+        local args = {...}
+        local msg = args[1]
+        table.remove(args, 1)
+        for _, arg in (args) do
+            msg = `{msg} {arg}`
+        end
         BlueKeep["Funcs"]["Notify"]("print", msg, 5)
     end)
-    hookfunction(warn, function(msg)
+    hookfunction(warn, function(...)
+        local args = {...}
+        local msg = args[1]
+        table.remove(args, 1)
+        for _, arg in (args) do
+            msg = `{msg} {arg}`
+        end
         BlueKeep["Funcs"]["Notify"]("warn", msg, 5)
     end)
-    hookfunction(error, function(msg)
+    hookfunction(error, function(...)
+        local args = {...}
+        local msg = args[1]
+        table.remove(args, 1)
+        for _, arg in (args) do
+            msg = `{msg} {arg}`
+        end
         BlueKeep["Funcs"]["Notify"]("error", msg, 5)
     end)
 end)
