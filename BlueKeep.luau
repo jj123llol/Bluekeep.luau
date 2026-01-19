@@ -145,7 +145,9 @@ BlueKeep["Loops"]["NotiQ"] = rs.RenderStepped:Connect(function()
     end
     if (tick() - BlueKeep["Vars"]["VersionTick"] > 60) and not BlueKeep["Vars"]["NewVersion"] then
         BlueKeep["Vars"]["VersionTick"] = tick()
-        if BlueKeep["Vars"]["Version"] ~= game:HttpGet("https://raw.githubusercontent.com/jj123llol/Bluekeep.luau/refs/heads/main/version.txt", true) then
+        local latest = game:HttpGet("https://raw.githubusercontent.com/jj123llol/Bluekeep.luau/refs/heads/main/version.txt", true)
+        print(BlueKeep["Vars"]["Version"], latest)
+        if BlueKeep["Vars"]["Version"] ~= latest then
             BlueKeep["Funcs"]["Notify"]("ALERT!", "Bluekeep has updated!", 5)
             BlueKeep["Vars"]["NewVersion"] = true
         end
