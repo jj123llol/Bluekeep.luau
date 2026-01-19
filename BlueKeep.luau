@@ -27,6 +27,10 @@ getgenv().BlueKeep = {
 }
 BlueKeep["Binds"]["CmdBar"] = "Minus"
 BlueKeep["Vars"]["VoidHeight"] = workspace.FallenPartsDestroyHeight
+BlueKeep["Vars"]["Gravity"] = workspace.Gravity
+BlueKeep["Vars"]["Version"] = game:HttpGet("https://raw.githubusercontent.com/jj123llol/Bluekeep.luau/refs/heads/main/version.txt", true)
+BlueKeep["Vars"]["NewVersion"] = false
+BlueKeep["Vars"]["VersionTick"] = tick()
 -- this way we dont accidently import multiple of the same service..
 BlueKeep["GetService"] = function(Name: string)
     if BlueKeep["Servs"][Name] then return BlueKeep["Servs"][Name] end
@@ -138,6 +142,13 @@ BlueKeep["Loops"]["NotiQ"] = rs.RenderStepped:Connect(function()
         local data = BlueKeep["NotiQ"][1]
         table.remove(BlueKeep["NotiQ"], 1)
         noti(data["Title"], data["Message"], data["Time"])
+    end
+    if (tick() - BlueKeep["Vars"]["VersionTick"] > 60) and not BlueKeep["Vars"]["NewVersion"] then
+        BlueKeep["Vars"]["VersionTick"] = tick()
+        if BlueKeep["Vars"]["Version"] ~= game:HttpGet("https://raw.githubusercontent.com/jj123llol/Bluekeep.luau/refs/heads/main/version.txt", true) then
+            BlueKeep["Funcs"]["Notify"]("ALERT!", "Bluekeep has updated!", 5)
+            BlueKeep["Vars"]["NewVersion"] = true
+        end
     end
 end)
 
