@@ -757,4 +757,4 @@ local function getlen(t:{any}) -- #table does not work on bad executors..
     return h 
 end
 
-BlueKeep["Funcs"]["Notify"]("BlueKeep", `Loaded<3\n {getlen(BlueKeep["Cmds"])} commands loaded.`, 10)
+BlueKeep["Funcs"]["Notify"]("BlueKeep", `Version: {BlueKeep["Vars"]["Version"]}\n {getlen(BlueKeep["Cmds"])} commands loaded.`, 10)
