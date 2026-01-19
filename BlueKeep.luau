@@ -69,7 +69,7 @@ local core = BlueKeep["GetService"]("CoreGui")
 local rs = BlueKeep["GetService"]("RunService")
 local uis = BlueKeep["GetService"]("UserInputService")
 
-local function noti(text, bottom, time) -- please use BlueKeep["Functions"]["Notify"] instead of this!
+local function noti(text, bottom, time) -- please use BlueKeep["Funcs"]["Notify"] instead of this!
     BlueKeep["Funcs"]["PlayAudio"](124951621656853)
     local ScreenGui = Instance.new("ScreenGui")
     local NotifGUI = Instance.new("Frame")
@@ -639,13 +639,13 @@ end)
 
 BlueKeep["Funcs"]["NewCommand"]("hookconsole", "hookconsole", "Stops print/error/warn from going into console and instead notifies you.", true, function()
     hookfunction(print, function(msg)
-        BlueKeep["Functions"]["Notify"]("print", msg, 5)
+        BlueKeep["Funcs"]["Notify"]("print", msg, 5)
     end)
     hookfunction(warn, function(msg)
-        BlueKeep["Functions"]["Notify"]("warn", msg, 5)
+        BlueKeep["Funcs"]["Notify"]("warn", msg, 5)
     end)
     hookfunction(error, function(msg)
-        BlueKeep["Functions"]["Notify"]("error", msg, 5)
+        BlueKeep["Funcs"]["Notify"]("error", msg, 5)
     end)
 end)
 
