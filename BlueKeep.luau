@@ -153,7 +153,7 @@ BlueKeep["Loops"]["MainLoop"] = rs.RenderStepped:Connect(function()
             BlueKeep["Vars"]["NewVersion"] = true
         end
     end
-    if (tick() - BlueKeep["Vars"]["NoclipTick"] > .5) and BlueKeep["Vars"]["Noclip"] then
+    if (tick() - BlueKeep["Vars"]["NoclipTick"] > 1.9) and BlueKeep["Vars"]["Noclip"] then
         BlueKeep["Funcs"]["SetCollison"](false)
     end
 end)
