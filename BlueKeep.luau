@@ -422,7 +422,7 @@ end
 BlueKeep["Funcs"]["StopLoop"] = function(loop: string)
     if BlueKeep["Loops"][loop] then
         BlueKeep["Loops"][loop]:Disconnect()
-        table.remove(BlueKeep["Loops"], BlueKeep["Loops"][loop])
+        table.remove(BlueKeep["Loops"], table.find(BlueKeep["Loops"], BlueKeep["Loops"][loop]))
     end
 end
 
