@@ -136,7 +136,9 @@ end
 
 -- loop for noti q --
 BlueKeep["Vars"]["Noticooldown"] = tick()
-BlueKeep["Loops"]["NotiQ"] = rs.RenderStepped:Connect(function()
+BlueKeep["Vars"]["NoclipTick"] = tick()
+BlueKeep["Vars"]["Noclip"] = false
+BlueKeep["Loops"]["MainLoop"] = rs.RenderStepped:Connect(function()
     if (#BlueKeep["NotiQ"] > 0) and (tick() - BlueKeep["Vars"]["Noticooldown"] > .3) and not core:FindFirstChild("Notification!") then
         BlueKeep["Vars"]["Noticooldown"] = tick()
         local data = BlueKeep["NotiQ"][1]
@@ -146,11 +148,13 @@ BlueKeep["Loops"]["NotiQ"] = rs.RenderStepped:Connect(function()
     if (tick() - BlueKeep["Vars"]["VersionTick"] > 60) and not BlueKeep["Vars"]["NewVersion"] then
         BlueKeep["Vars"]["VersionTick"] = tick()
         local latest = game:HttpGet("https://raw.githubusercontent.com/jj123llol/Bluekeep.luau/refs/heads/main/version.txt", true)
-        print(BlueKeep["Vars"]["Version"], latest)
         if BlueKeep["Vars"]["Version"] ~= latest then
             BlueKeep["Funcs"]["Notify"]("ALERT!", "Bluekeep has updated!", 5)
             BlueKeep["Vars"]["NewVersion"] = true
         end
+    end
+    if (tick() - BlueKeep["Vars"]["NoclipTick"] > .5) and BlueKeep["Vars"]["Noclip"] then
+        BlueKeep["Funcs"]["SetCollison"](false)
     end
 end)
 
@@ -515,14 +519,11 @@ BlueKeep["Funcs"]["NewCommand"]("unloopgoto", "unloopgoto", "disables loopgoto",
 end)
 
 BlueKeep["Funcs"]["NewCommand"]("noclip", "noclip", "walk through walls", true, function()
-    BlueKeep["Funcs"]["StopLoop"]("Noclip")
-    BlueKeep["Loops"]["Noclip"] = rs.Heartbeat:Connect(function()
-        BlueKeep["Funcs"]["SetCollison"](false)
-    end)
+    BlueKeep["Vars"]["Noclip"] = true
 end)
 
 BlueKeep["Funcs"]["NewCommand"]("clip", "clip", "disables noclip", true, function()
-    BlueKeep["Funcs"]["StopLoop"]("Noclip")
+    BlueKeep["Vars"]["Noclip"] = false
     BlueKeep["Funcs"]["SetCollison"](true)
 end)
 
