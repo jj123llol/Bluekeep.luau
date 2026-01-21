@@ -41,7 +41,7 @@ BlueKeep["Funcs"]["Camera"] = function() return workspace.CurrentCamera end
 
 -- adds new commands to BlueKeep.luau
 BlueKeep["Funcs"]["NewCommand"] = function(Name:string, CmdList: string, Description: string, SplitArgs: boolean, func: callback)
-    BlueKeep["Cmds"][Name or "print"] = {
+    BlueKeep["Cmds"][Name:lower() or "print"] = {
         ["CmdList"] = CmdList or "print (Text)",
         ["Description"] = Description or "No Description provided",
         ["SplitArgs"] = SplitArgs or true,
@@ -50,6 +50,7 @@ BlueKeep["Funcs"]["NewCommand"] = function(Name:string, CmdList: string, Descrip
 end
 
 BlueKeep["Funcs"]["RunCommand"] = function(Name: string, args: {any}) -- attempts to run command with given args
+    Name = Name:lower() or "nil"
     if not BlueKeep["Cmds"][Name] then return false, error(`Failed to find command {Name}!`) end
     if BlueKeep["Cmds"][Name]["SplitArgs"] then
         BlueKeep["Cmds"][Name]["Function"](table.unpack(args))
@@ -468,7 +469,7 @@ for _, file in pairs(listfiles("BlueKeep/Plugins")) do
 end
 
 -- Commands --
-BlueKeep["Funcs"]["NewCommand"]("Goto", "Goto (Plr)", "Teleports to (Plr)", true, function(target)
+BlueKeep["Funcs"]["NewCommand"]("goto", "goto (Plr)", "Teleports to (Plr)", true, function(target)
     local targets = BlueKeep["Funcs"]["GetPlayer"](target)
     for _,v in pairs(targets) do
         BlueKeep["Funcs"]["No Vel"]()
