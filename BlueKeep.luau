@@ -672,6 +672,8 @@ BlueKeep["Funcs"]["NewCommand"]("hookconsole", "hookconsole", "Stops print/error
     end)
 end)
 
+BlueKeep["Funcs"]["NewCommand"]() -- adds print
+
 -- Command bar --
 local ScreenGui = Instance.new("ScreenGui")
 local CmdBar = Instance.new("Frame")
