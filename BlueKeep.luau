@@ -529,79 +529,7 @@ BlueKeep["Funcs"]["NewCommand"]("clip", "clip", "disables noclip", true, functio
     BlueKeep["Funcs"]["SetCollison"](true)
 end)
 
-BlueKeep["Funcs"]["NewCommand"](
-	"freecam",
-	"freecam (speed)",
-	"Toggle freecam (camera noclip)",
-	true,
-	function(speed)
 
-		local cam = BlueKeep["Funcs"]["Camera"]()
-		speed = speed or 1.4
-		local sensitivity = 0.0025
-
-		if BlueKeep["Vars"]["FreecamEnabled"] then
-			
-			BlueKeep["Vars"]["FreecamEnabled"] = false
-			cam.CameraType = Enum.CameraType.Custom
-			uis.MouseBehavior = Enum.MouseBehavior.Default
-			BlueKeep["Funcs"]["Notify"]("Freecam", "Disabled", 2)
-            BlueKeep["Funcs"]["Character"]().HumanoidRootPart.Anchored = false
-			return
-		end
-
-	
-		BlueKeep["Vars"]["FreecamEnabled"] = true
-        BlueKeep["Funcs"]["Character"]().HumanoidRootPart.Anchored = true
-		cam.CameraType = Enum.CameraType.Scriptable
-		uis.MouseBehavior = Enum.MouseBehavior.LockCenter
-
-		local cf = cam.CFrame
-		local rx, ry = 0, 0
-
-		local moveConn, lookConn
-
-		moveConn = rs.RenderStepped:Connect(function()
-			if not BlueKeep["Vars"]["FreecamEnabled"] then
-				moveConn:Disconnect()
-				if lookConn then lookConn:Disconnect() end
-				return
-			end
-
-			local dir = Vector3.zero
-
-			if uis:IsKeyDown(Enum.KeyCode.W) then dir += Vector3.new(0,0,-1) end
-			if uis:IsKeyDown(Enum.KeyCode.S) then dir += Vector3.new(0,0,1) end
-			if uis:IsKeyDown(Enum.KeyCode.A) then dir += Vector3.new(-1,0,0) end
-			if uis:IsKeyDown(Enum.KeyCode.D) then dir += Vector3.new(1,0,0) end
-			if uis:IsKeyDown(Enum.KeyCode.Space) then dir += Vector3.new(0,1,0) end
-			if uis:IsKeyDown(Enum.KeyCode.LeftControl) then dir += Vector3.new(0,-1,0) end
-
-			if dir.Magnitude > 0 then
-				dir = dir.Unit
-			end
-
-			cf = cf * CFrame.new(dir * speed)
-			cam.CFrame = cf
-		end)
-
-		lookConn = uis.InputChanged:Connect(function(input, gpe)
-			if gpe or not BlueKeep["Vars"]["FreecamEnabled"] then return end
-
-			if input.UserInputType == Enum.UserInputType.MouseMovement then
-				rx -= input.Delta.Y * sensitivity
-				ry -= input.Delta.X * sensitivity
-
-				rx = math.clamp(rx, -math.rad(85), math.rad(85))
-
-				cf = CFrame.new(cf.Position) * CFrame.Angles(rx, ry, 0)
-				cam.CFrame = cf
-			end
-		end)
-
-		BlueKeep["Funcs"]["Notify"]("Freecam", "Enabled", 2)
-	end
-)
 
 BlueKeep["Funcs"]["NewCommand"]("view", "view (plr)", "Views player", true, function(target)
     BlueKeep["Funcs"]["StopLoop"]("Viewing")
