@@ -7,7 +7,9 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/jj123llol/Bluekeep.lu
 # Discord
 https://discord.gg/zTQ4pjwVWR
 
+#Updates: Upcoming, not gonna be polished because I fell out with coding twin
+
 # Extra
 Developed by really_ant., and luageek.<br>
 Keeping it blue.
-# 🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦
+# 🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦
