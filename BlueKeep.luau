@@ -2,15 +2,19 @@
 
     All Credits Of BlueKeep.Luau:
         Really_Ant. (Scripter)
-        LuaGeek (Scripter, UI)
+        LuaGeek (Scripter, shitty UI)
 
     Enjoy<3
 ]]
 
+-- I really tried hard on this update I can barely remember much of it
+-- nothing important just general bug fixes
+-- expect nothing I am dum :P
+
 type callback = () -> ()
 getgenv = getgenv -- because visual studio code errors pmo
 BlueKeep = BlueKeep or nil -- visual studio code errors pmo
-if BlueKeep then return error("Bluekeep.luau is already running!") end
+if BlueKeep then return error("Bluekeep is already running!") end -- idiots who use ts
 
 
 -- Setting Up! --
@@ -25,7 +29,7 @@ getgenv().BlueKeep = {
     ["Vars"] = {},
     ["NotiQ"] = {}
 }
-BlueKeep["Binds"]["CmdBar"] = "Minus"
+BlueKeep["Binds"]["CmdBar"] = "Semicolon" -- Switched it up to a ; which most peopel are used to from IY/IYR
 BlueKeep["Vars"]["VoidHeight"] = workspace.FallenPartsDestroyHeight
 BlueKeep["Vars"]["Gravity"] = workspace.Gravity
 BlueKeep["Vars"]["Version"] = game:HttpGet("https://raw.githubusercontent.com/jj123llol/Bluekeep.luau/refs/heads/main/version.txt", true)
@@ -136,6 +140,7 @@ local function noti(text, bottom, time) -- please use BlueKeep["Funcs"]["Notify"
 end
 
 -- loop for noti q --
+-- this is probably a massive
 BlueKeep["Vars"]["Noticooldown"] = tick()
 BlueKeep["Vars"]["NoclipTick"] = tick()
 BlueKeep["Vars"]["Noclip"] = false
@@ -150,7 +155,7 @@ BlueKeep["Loops"]["MainLoop"] = rs.RenderStepped:Connect(function()
         BlueKeep["Vars"]["VersionTick"] = tick()
         local latest = game:HttpGet("https://raw.githubusercontent.com/jj123llol/Bluekeep.luau/refs/heads/main/version.txt", true)
         if BlueKeep["Vars"]["Version"] ~= latest then
-            BlueKeep["Funcs"]["Notify"]("ALERT!", "Bluekeep has updated!", 5)
+            BlueKeep["Funcs"]["Notify"]("ALERT!", "Bluekeep has updated, please upgrade by re-running the script!", 5)
             BlueKeep["Vars"]["NewVersion"] = true
         end
     end
@@ -323,59 +328,62 @@ BlueKeep["Uis"]["CmdList"] = function()
     UIGridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
     UIGridLayout.CellSize = UDim2.new(0, 250, 0, 80)
 
-    local function GUIKCM_fake_script() -- CmdList.Dragify 
-	    local script = Instance.new('LocalScript', CmdList)
-	    local UserInputService = uis
-	    local dragToggle
-	    local dragInput
-	    local dragSpeed
-	    local dragStart
-	    local dragPos
-	    local startPos
-	
-	    function dragify(Frame)
-	        dragToggle = nil
-	        dragSpeed = 0.50
-	        dragInput = nil
-	        dragStart = nil
-	        dragPos = nil
-	        local function updateInput(input)
-	            local Delta = input.Position - dragStart
-	            local Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + Delta.X, startPos.Y.Scale, startPos.Y.Offset + Delta.Y)
-	            ts:Create(Frame, TweenInfo.new(0.30), {Position = Position}):Play()
-	    end
-	        Frame.InputBegan:Connect(function(input)
-	            if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and UserInputService:GetFocusedTextBox() == nil then
-	                dragToggle = true
-	                dragStart = input.Position
-	                startPos = Frame.Position
-	                input.Changed:Connect(function()
-	                    if input.UserInputState == Enum.UserInputState.End then
-	                        dragToggle = false
-	                    end
-	                end)
-	            end
-	        end)
-	        Frame.InputChanged:Connect(function(input)
-	            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-	                dragInput = input
-	            end
-	        end)
-	        uis.InputChanged:Connect(function(input)
-	            if input == dragInput and dragToggle then
-	                updateInput(input)
-	            end
-	        end)
-	    end
-	
-	    dragify(script.Parent)
-    end
-    coroutine.wrap(GUIKCM_fake_script)()
+    local function GUIKCM_fake_script() -- CmdList.Dragify (Dragify updated to be one I modified, it's fixed some weird shit I had)
+local script = Instance.new('LocalScript', CmdList)
+local UserInputService = uis
+
+local dragToggle, dragInput, dragStart, startPos
+
+local function updateInput(input)
+	local Delta = input.Position - dragStart
+	local Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + Delta.X, startPos.Y.Scale, startPos.Y.Offset + Delta.Y)
+	ts:Create(script.Parent, TweenInfo.new(0.30), {Position = Position}):Play()
+end
+
+local function dragify(Frame)
+	dragToggle = false
+	dragInput = nil
+	dragStart = nil
+	startPos = nil
+
+	Frame.InputBegan:Connect(function(input)
+		if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch)
+			and UserInputService:GetFocusedTextBox() == nil then
+			
+			dragToggle = true
+			dragStart = input.Position
+			startPos = Frame.Position
+			
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragToggle = false
+				end
+			end)
+		end
+	end)
+
+	Frame.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			dragInput = input
+		end
+	end)
+
+	uis.InputChanged:Connect(function(input)
+		if input == dragInput and dragToggle then
+			updateInput(input)
+		end
+	end)
+end
+
+dragify(script.Parent)
+    coroutine.wrap(GUIKCM_fake_script)() -- lol fake gucci (inside joke)
     for name,cmd in pairs(BlueKeep["Cmds"]) do
         task.wait(1/30) -- tons of commands would freeze the game on load. this should fix/help fix that
         addcmd(cmd["CmdList"], cmd["Description"], name)
     end
 end
+-- reminder to put some cool shit in this edition like my fulldof anims (todo)
+
 
 BlueKeep["Funcs"]["Notify"] = function(Title:string, Message:string, Time:number)
 task.spawn(function()
@@ -399,25 +407,33 @@ BlueKeep["Funcs"]["GetKey"] = function()
     return key.KeyCode.Name
 end
 
-BlueKeep["Funcs"]["GetPlayer"] = function(partName: string) -- returns list of target(s)
-    partName = partName:lower()
-    local plrs = players:GetPlayers()
-    local returntable = {}
-    if partName == "all" then return plrs end
-    if partName == "me" then return {lp} end
-    if partName == "random" then return {plrs[math.random(1, #plrs)]} end
-    if partName == "others" then
-        for _,v in pairs(plrs) do
-            if v == lp then continue end
-            table.insert(returntable, v)
-        end
-    end
-    for _,v in pairs(plrs) do
-        if v:find(partName) then
-            return {v}
-        end
-    end
-    return {nil}
+BlueKeep["Funcs"]["GetPlayer"] = function(partName: string) -- removed pairs() because getplrs bi func was kinda faster, however I kinda could see what u were doing?
+	partName = partName:lower()
+	local plrs = players:GetPlayers()
+	
+	if partName == "all" then return plrs end
+	if partName == "me" then return {lp} end
+	if partName == "random" then 
+		return {plrs[math.random(1, #plrs)]} 
+	end
+	
+	if partName == "others" then
+		local returntable = {}
+		for _, v in plrs do
+			if v ~= lp then
+				table.insert(returntable, v)
+			end
+		end
+		return returntable
+	end
+	
+	for _, v in plrs do
+		if v:find(partName) then
+			return {v}
+		end
+	end
+	
+	return {nil}
 end
 
 BlueKeep["Funcs"]["Character"] = function(plr: Player) -- returns character of entered player, if no player entered it returns lp character
@@ -454,7 +470,7 @@ end
 local checkfor = {
     "BlueKeep",
     "BlueKeep/Plugins",
-    "BlueKeep/BlueSettings.Settings" -- are we even gonna use settings?
+    "BlueKeep/BlueSettings.Settings" -- settings might be useless atp
 }
 for _, path in pairs(checkfor) do
     if not isfile(path) then
@@ -481,27 +497,7 @@ BlueKeep["Funcs"]["NewCommand"]("cmds", "cmds", "Open cmd list", true, function(
     BlueKeep["Uis"]["CmdList"]()
 end)
 
-BlueKeep["Funcs"]["NewCommand"]("re", "re", "respawn at current pos", true, function()
-    local char = BlueKeep["Funcs"]["Character"]()
-    local ogpos = char:GetPivot()
-    if replicatesignal then
-        BlueKeep["Funcs"]["Notify"]("Respawning", `Respawning in {players.RespawnTime}`, players.RespawnTime)
-        replicatesignal(lp.ConnectDiedSignalBackend)
-        task.wait(players.RespawnTime - 0.1)
-        ogpos = char:GetPivot()
-        replicatesignal(lp.Kill)
-        lp.CharacterAdded:Wait():WaitForChild("Humanoid")
-        BlueKeep["Funcs"]["Character"]():PivotTo(ogpos)
-        return
-    end
-	workspace.FallenPartsDestroyHeight = 0/0
-	char:PivotTo(CFrame.new(5235, BlueKeep["Vars"]["VoidHeight"] - 100, 5235))
-	task.wait(.1)
-	workspace.FallenPartsDestroyHeight = BlueKeep["Vars"]["VoidHeight"]
-    char:BreakJoints()
-    lp.CharacterAdded:Wait():WaitForChild("Humanoid")
-    BlueKeep["Funcs"]["Character"]():PivotTo(ogpos)
-end)
+
 
 BlueKeep["Funcs"]["NewCommand"]("sit", "sit", "sits down", true, function()
     BlueKeep["Funcs"]["Character"]():WaitForChild("Humanoid").Sit = true
